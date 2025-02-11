@@ -132,13 +132,15 @@ const Hero = () => {
                                         <p className="mt-2 sm:mt-3 md:mt-4 lg:mt-5 text-xs sm:text-sm md:text-base lg:text-lg text-[#666]">{item.description}</p>
                                     </div>
 
-                                    {/* Кнопка "Перейти" */}
-                                    <button
+                                    <motion.button
+                                        initial={{opacity: 0, scale: 0.9, y: 5}}
+                                        animate={{opacity: 1, scale: 1, y: 0}}
+                                        transition={{duration: 2, ease: "easeOut"}}
                                         className="mt-4 bg-[#C7E07A] text-[#333] font-medium py-2 px-4 rounded-full shadow-md hover:bg-[#B4CC6E] transition
-                lg:opacity-0 lg:group-hover:opacity-100 lg:transition-opacity lg:duration-300 block w-full text-center"
+                lg:opacity-100 block w-full text-center"
                                     >
                                         Перейти
-                                    </button>
+                                    </motion.button>
                                 </div>
                             ))}
                         </div>
