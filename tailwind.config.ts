@@ -9,8 +9,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: "#F8F8F3", // Светлый фон
+        foreground: "#333333", // Темный текст
+        accent: "#C7E07A",     // Зеленый акцент
+
+        accentHover: "#B4CC6E", // Чуть более тёмный зелёный для hover
+
       },
     },
   },
