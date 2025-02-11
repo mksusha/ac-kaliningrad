@@ -7,7 +7,7 @@ const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false); // Состояние для бургера
 
     return (
-        <header className="md:bg-transparent bg-[#C7E07A]/40 backdrop-blur-sm p-0 lg:py-4 shadow-sm fixed top-0 left-0 w-full z-50">
+        <header className="md:bg-transparent bg-background/50 backdrop-blur-sm p-0 lg:py-4 shadow-xl lg:bg-background/70 fixed top-0 left-0 w-full z-50">
             <div className="container mx-auto flex items-center justify-between px-6 lg:py-1.5 max-w-[1350px] w-full">
                 {/* Логотип */}
                 <a href="/" className="flex items-center text-xl font-bold text-foreground">
@@ -18,14 +18,14 @@ const Header = () => {
                 <div className="relative flex items-center">
                     {/* Овал с фоном (скрыт на экранах < 375px) */}
                     <div
-                        className="hidden md:block absolute w-[550px] h-[40px] bg-[#C7E07A] opacity-40 rounded-full -z-10 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        className="hidden md:block absolute w-[550px] h-[40px] bg-[#C7E07A] opacity-60 rounded-full -z-10 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
                     </div>
 
                     {/* Навигация для больших экранов */}
                     <nav className="hidden md:flex space-x-1 z-10">
                         {["Каталог", "Услуги", "Портфолио", "Отзывы", "Контакты"].map((text, index) => (
                             <a key={index} href={`#${text.toLowerCase()}`}
-                               className="text-foreground hover:text-accentHover transition px-3 py-2">
+                               className="text-foreground hover:text-accentHover2  transition px-3 py-2">
                                 {text}
                             </a>
                         ))}

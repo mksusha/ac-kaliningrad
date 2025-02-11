@@ -14,6 +14,8 @@ export default {
         accent: "#C7E07A",     // Зеленый акцент
 
         accentHover: "#B4CC6E", // Чуть более тёмный зелёный для hover
+        accentHover2: "#879a4f", // Чуть более тёмный зелёный для hover
+
 
       },
     },
