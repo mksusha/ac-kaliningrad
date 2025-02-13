@@ -84,7 +84,7 @@ const Hero = () => {
 
                             {/* Вторая кнопка */}
                             <button className="bg-[#1E1E1E]/60 text-white font-semibold text-sm sm:text-base md:text-lg lg:text-base xl:text-lg py-3 px-6 sm:py-4 sm:px-8 md:py-4 md:px-10 lg:py-3 lg:px-8 xl:py-4 xl:px-10 rounded-full border-2 border-[#C7E07A] transition-all duration-300
-        hover:bg-white hover:text-[#333333] hover:border-white">
+        hover:bg-background hover:text-[#333333] hover:border-background">
                                 Оставить заявку
                             </button>
                         </div>

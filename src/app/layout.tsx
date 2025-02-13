@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google"; // Импортируем Nunito
 import "./globals.css";
+import Footer from "@/app/components/Footer";
 
 // Подключение Nunito
 const nunito = Nunito({
@@ -21,8 +22,13 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" className={nunito.variable}>
-        <body className="antialiased text-foreground">{children}</body>
+        <body className="antialiased text-foreground flex flex-col min-h-screen">
+        {/* Контейнер с ограниченной шириной */}
+        <div className="max-w-[1350px] w-full mx-auto  flex-1">
+            <main className="flex-1">{children}</main>
+            <Footer /> {/* Футер остаётся прижатым к низу */}
+        </div>
+        </body>
         </html>
-
     );
 }

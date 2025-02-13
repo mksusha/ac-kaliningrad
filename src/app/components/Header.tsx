@@ -1,7 +1,8 @@
 'use client'
 import { FiShoppingCart } from "react-icons/fi"; // Иконка корзины
 import { useState } from "react"; // Для состояния бургера
-import { HiMenu, HiX } from "react-icons/hi"; // Иконки для бургера
+import { HiMenu, HiX } from "react-icons/hi";
+import Link from "next/link"; // Иконки для бургера
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false); // Состояние для бургера
@@ -23,13 +24,23 @@ const Header = () => {
 
                     {/* Навигация для больших экранов */}
                     <nav className="hidden md:flex space-x-1 z-10">
-                        {["Каталог", "Услуги", "Портфолио", "Отзывы", "Контакты"].map((text, index) => (
-                            <a key={index} href={`#${text.toLowerCase()}`}
-                               className="text-foreground hover:text-accentHover2  transition px-3 py-2">
+                        {[
+                            {text: "Каталог", url: "/catalog"},
+                            {text: "Услуги", url: "/services"},
+                            {text: "Портфолио", url: "/portfolio"},
+                            {text: "Отзывы", url: "/reviews"},
+                            {text: "Контакты", url: "/contacts"},
+                        ].map(({text, url}, index) => (
+                            <Link
+                                key={index}
+                                href={url}
+                                className="text-foreground hover:text-accentHover2 transition px-3 py-2"
+                            >
                                 {text}
-                            </a>
+                            </Link>
                         ))}
                     </nav>
+
 
                 </div>
 
@@ -77,7 +88,7 @@ const Header = () => {
                 </button>
 
                 <nav className="flex flex-col space-y-4 mt-16">
-                    <a href="#catalog" className="text-foreground hover:text-accentHover">
+                    <a href="/catalog" className="text-foreground hover:text-accentHover">
                         Каталог
                     </a>
                     <a href="#services" className="text-foreground hover:text-accentHover">
