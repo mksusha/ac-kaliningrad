@@ -8,7 +8,7 @@ const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false); // Состояние для бургера
 
     return (
-        <header className="md:bg-transparent bg-background/50 backdrop-blur-sm p-0 lg:py-4 shadow-xl lg:bg-background/70 fixed top-0 left-0 w-full z-50">
+        <header className="md:bg-transparent bg-background/50 backdrop-blur-sm p-0 lg:py-4 shadow-sm lg:bg-background/70 fixed top-0 left-0 w-full z-50">
             <div className="container mx-auto flex items-center justify-between px-6 lg:py-1.5 max-w-[1350px] w-full">
                 {/* Логотип */}
                 <a href="/" className="flex items-center text-xl font-bold text-foreground">

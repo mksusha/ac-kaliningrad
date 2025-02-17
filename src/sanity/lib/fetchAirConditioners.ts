@@ -16,7 +16,11 @@ export async function getAirConditioners(): Promise<AirConditioner[]> {
     category,
     "imageUrl": images[0].asset->url,
     description,
+    "slug": slug.current,
     specs,
-    prices
+    prices,
+      management,
+      
+    refrigerant,
   }`);
 }

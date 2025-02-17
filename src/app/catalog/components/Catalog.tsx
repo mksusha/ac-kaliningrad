@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link"; // Импортируем Link для навигации
 import { AirConditioner } from "@/types/product";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
@@ -74,14 +75,20 @@ export default function Catalog({ airConditioners }: { airConditioners: AirCondi
         setCurrentPage(page);
     };
 
+    const categoryMap: { [key: string]: string } = {
+        wall: "Настенные кондиционеры",
+        cloud: "Облачные кондиционеры",
+        mobile: "Мобильные кондиционеры",
+        window: "Оконные кондиционеры",
+    };
+
     return (
         <div className="container mx-auto px-4 w-full">
             {/* Шапка каталога */}
-            <div className="flex flex-col sm:flex-row justify-between  items-center my-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center my-6">
                 <p className="text-[#333333] text-lg mb-2 sm:mb-0">
                     Найдено: {sortedAirConditioners.length}
                 </p>
-                {/* Используем кастомный Radix UI селект */}
                 <Select
                     value={sortType}
                     onValueChange={(value) => {
@@ -94,22 +101,25 @@ export default function Catalog({ airConditioners }: { airConditioners: AirCondi
                         <SelectValue placeholder="Сортировка" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="default">Без сортировки</SelectItem>
-                        <SelectItem value="name-asc">Название A-Я</SelectItem>
-                        <SelectItem value="name-desc">Название Я-А</SelectItem>
-                        <SelectItem value="price-asc">Цена (дешевые → дорогие)</SelectItem>
-                        <SelectItem value="price-desc">Цена (дорогие → дешевые)</SelectItem>
+                        <SelectItem key="default" value="default">Без сортировки</SelectItem>
+                        <SelectItem key="name-asc" value="name-asc">Название A-Я</SelectItem>
+                        <SelectItem key="name-desc" value="name-desc">Название Я-А</SelectItem>
+                        <SelectItem key="price-asc" value="price-asc">Цена (дешевые → дорогие)</SelectItem>
+                        <SelectItem key="price-desc" value="price-desc">Цена (дорогие → дешевые)</SelectItem>
                     </SelectContent>
+
                 </Select>
             </div>
 
             {/* Список товаров */}
-            {/* Список товаров */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {displayedItems.map((item) => (
-                    <div
-                        key={item._id}
-                        className="
+                    <Link
+                        href={`/catalog/${item.slug}`}                         key={item._id || item.slug }
+                        className="group" // Можно добавить класс для hover-эффектов
+                    >
+                        <div
+                            className="
                 bg-white
                 border border-foreground/20
                 rounded-xl
@@ -120,41 +130,52 @@ export default function Catalog({ airConditioners }: { airConditioners: AirCondi
                 hover:shadow-lg
                 hover:border-foreground/50
                 hover:bg-gray-50
-                group
-            "
-                    >
-                        <div className="relative w-full h-52 flex items-center justify-center bg-white">
-                            <img
-                                src={item.imageUrl}
-                                alt={item.title}
-                                className="w-auto h-full object-contain"
-                            />
-                        </div>
-                        <div
-                            className="
-                    p-4
-                    bg-foreground
-                    w-full h-full
-                    flex flex-col justify-between
-                    transition-all
-                    duration-300
-                    group-hover:bg-foreground/90
-                "
+                flex flex-col
+                h-full
+              "
                         >
-                            <div>
-                                <h2 className="text-lg font-semibold text-white break-words">
-                                    {item.title}
-                                </h2>
-                                <p className="text-base text-gray-300">{item.brand}</p>
-                                <p className="text-lg font-bold text-[#C7E07A] mt-2">
-                                    {item.prices[0]} ₽
-                                </p>
+                            <div className="relative w-full h-52 flex items-center justify-center bg-white">
+                                <img
+                                    src={item.imageUrl}
+                                    alt={item.title}
+                                    className="w-auto h-full object-contain"
+                                />
+                            </div>
+                            <div
+                                className="
+                  p-4
+                  bg-foreground
+                  w-full h-full
+                  flex flex-col
+                  transition-all
+                  duration-300
+                  group-hover:bg-foreground/90
+                  flex-grow
+                "
+                            >
+                                <div className="flex-grow">
+                                    {item.category && (
+                                        <p className="text-sm text-foreground bg-accent px-1 mb-2 py-1 rounded-lg inline-block">
+                                            {categoryMap[item.category] || "Неизвестная категория"}
+                                        </p>
+                                    )}
+
+                                    <h2 className="text-lg font-semibold text-white break-words">
+                                        {item.title}
+                                    </h2>
+                                    <p className="text-sm text-gray-300">{item.brand}</p>
+                                </div>
+
+                                <div className="">
+                                    <p className="text-lg font-bold text-[#C7E07A]">
+                                        {item.prices[0]} ₽
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
-
 
             {/* Кнопка "Показать ещё" – накопительный режим */}
             {currentPage < totalPages && (
@@ -172,7 +193,7 @@ export default function Catalog({ airConditioners }: { airConditioners: AirCondi
 
             {/* Пагинация (стрелки) – переключение страниц без накопления */}
             {totalPages > 1 && (
-                <div className="flex  sm:flex-row items-center justify-center gap-4 mt-8">
+                <div className="flex sm:flex-row items-center justify-center gap-4 mt-8">
                     <button
                         type="button"
                         onMouseDown={(e) => e.preventDefault()}

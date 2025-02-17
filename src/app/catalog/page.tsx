@@ -21,38 +21,57 @@ export default function CatalogPage() {
         fetchData();
     }, []);
 
-    // Функция фильтрации
-    const handleFilterChange = (filters: { category: string; brand: string; search: string }) => {
+    // Обратите внимание на новые поля management, refrigerant
+    const handleFilterChange = (filters: {
+        category: string;
+        brand: string;
+        search: string;
+        management: string;
+        refrigerant: string;
+    }) => {
         let filtered = airConditioners;
 
+        // Фильтрация по категории
         if (filters.category) {
             filtered = filtered.filter((item) => item.category === filters.category);
         }
 
+        // Фильтрация по бренду
         if (filters.brand) {
             filtered = filtered.filter((item) => item.brand === filters.brand);
         }
 
+        // Поиск по названию
         if (filters.search) {
             filtered = filtered.filter((item) =>
                 item.title.toLowerCase().includes(filters.search.toLowerCase())
             );
         }
 
+        // Фильтрация по режиму управления
+        if (filters.management) {
+            filtered = filtered.filter((item) => item.management === filters.management);
+        }
+
+        // Фильтрация по типу хладагента
+        if (filters.refrigerant) {
+            filtered = filtered.filter((item) => item.refrigerant === filters.refrigerant);
+        }
+
         setFilteredData(filtered);
     };
 
     return (
-        <div className="bg-white ">
+        <div className="bg-white">
             <Header />
-            <div className="container max-w-[1350px]  m-auto p-6 flex flex-col gap-4">
-                {/* ✅ Фильтры теперь только сверху */}
+            <div className="container max-w-[1350px] m-auto p-6 flex flex-col gap-4">
+                {/* Компонент с фильтрами */}
                 <Filters onFilterChangeAction={handleFilterChange} />
 
-                {/* ✅ Каталог занимает всю ширину под фильтрами */}
+                {/* Каталог с уже отфильтрованными данными */}
                 <Catalog airConditioners={filteredData} />
             </div>
-
+            <Footer></Footer>
         </div>
     );
 }

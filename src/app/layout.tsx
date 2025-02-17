@@ -26,7 +26,7 @@ export default function RootLayout({
         {/* Контейнер с ограниченной шириной */}
         <div className="max-w-[1350px] w-full mx-auto  flex-1">
             <main className="flex-1">{children}</main>
-            <Footer /> {/* Футер остаётся прижатым к низу */}
+
         </div>
         </body>
         </html>
