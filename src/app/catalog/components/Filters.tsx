@@ -61,7 +61,7 @@ export default function Filters({ onFilterChangeAction }: FiltersProps) {
 
     return (
         <div
-            className="mt-28 bg-accent border-2 border-foreground max-w-[1350px] p-6 rounded-3xl flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
+            className="mt-28 bg-accent border-2 border-accent max-w-[1350px] p-6 rounded-3xl flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
         >
             {/* Фильтр по категории */}
             <div className="flex flex-col w-full md:w-auto">
