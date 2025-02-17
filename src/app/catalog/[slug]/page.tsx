@@ -23,7 +23,8 @@ const client = createClient({
 });
 
 // Генерация статических путей (пример)
-export async function generateStaticParams() {
+
+export async function generateStaticParams(): Promise<{ params: { slug: string } }[]> {
     const query = `*[_type == "product" && defined(slug.current)]{
         "slug": slug.current
     }`;
@@ -31,20 +32,23 @@ export async function generateStaticParams() {
     const products = await client.fetch(query);
 
     return products.map((product: { slug: string }) => ({
-        slug: product.slug
+        params: { slug: product.slug }
     }));
 }
 
+// Типизация пропсов для `ProductPage`
+type ProductPageProps = {
+    params: {
+        slug: string;
+    };
+};
 
-export default async function ProductPage({ params }: { params: { slug: string } }) {
+export default async function ProductPage({ params }: any) {
     if (!params?.slug) {
         return notFound();
     }
 
     const { slug } = params;
-
-
-
     // Запрос с дополнительными полями
     const query = `*[_type == "product" && slug.current == $slug][0]{
       title,
