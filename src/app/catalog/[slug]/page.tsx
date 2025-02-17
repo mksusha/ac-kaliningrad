@@ -35,12 +35,11 @@ export async function generateStaticParams() {
     }));
 }
 
-
 interface PageProps {
-    params?: { slug: string };
+    params: { slug: string };
 }
 
-export default async function ProductPage({ params }: { params: { slug: string } }) {
+export default async function ProductPage({ params }: PageProps) {
     if (!params || !params.slug) {
         return notFound();
     }
