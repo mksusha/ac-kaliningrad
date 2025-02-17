@@ -36,8 +36,8 @@ interface PageProps {
     params?: { slug: string };
 }
 
-export default async function ProductPage({ params }: PageProps) {
-    if (!params) {
+export default async function ProductPage({ params }: { params: { slug: string } }) {
+    if (!params || !params.slug) {
         return notFound();
     }
 
