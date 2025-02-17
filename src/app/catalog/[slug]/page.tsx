@@ -23,12 +23,16 @@ const client = createClient({
 });
 
 // Генерация статических путей (пример)
-export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
+export async function generateStaticParams() {
     const query = `*[_type == "product" && defined(slug.current)]{
-        "slug": slug.current
+      "slug": slug.current
     }`;
+
     const products: { slug: string }[] = await client.fetch(query);
-    return products.map((product) => ({ slug: product.slug }));
+
+    return products.map((product) => ({
+        slug: product.slug,
+    }));
 }
 
 
