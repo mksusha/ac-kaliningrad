@@ -11,7 +11,9 @@ const nextConfig: NextConfig = {
                 headers: [
                     {
                         key: "Content-Security-Policy",
-                        value: "script-src 'self' 'unsafe-eval' 'unsafe-inline' 'wasm-unsafe-eval' 'inline-speculation-rules' https://api-maps.yandex.ru https://yastatic.net;",
+                        // Здесь добавляем директиву 'unsafe-inline' (и другие, если необходимо) и указываем default-src
+                        value:
+                            "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' 'inline-speculation-rules' https://api-maps.yandex.ru https://yastatic.net;",
                     },
                 ],
             },
