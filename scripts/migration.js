@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { createClient } from 'next-sanity';
 
-console.log('Project ID:', process.env.NEXT_PUBLIC_SANITY_PROJECT_ID);
+
 
 const client = createClient({
     projectId: "2y01oix2", // "2y01oix2"

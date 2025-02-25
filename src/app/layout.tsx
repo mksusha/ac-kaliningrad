@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google"; // Импортируем Nunito
 import "./globals.css";
 import Footer from "@/app/components/Footer";
+import { CartProvider } from "@/hooks/useCart";
 
 // Подключение Nunito
 const nunito = Nunito({
@@ -17,17 +18,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
                                        children,
-                                   }: Readonly<{
+                                   }: {
     children: React.ReactNode;
-}>) {
+}) {
     return (
         <html lang="en" className={nunito.variable}>
         <body className="antialiased text-foreground flex flex-col min-h-screen">
-        {/* Контейнер с ограниченной шириной */}
-        <div className="max-w-[1350px] w-full mx-auto  flex-1">
-            <main className="flex-1">{children}</main>
+        {/* Оборачиваем детей в провайдер корзины */}
+        <CartProvider>
+            {/* Контейнер с ограниченной шириной */}
+            <div className="max-w-[1350px] w-full mx-auto flex-1">
+                <main className="flex-1">{children}</main>
+            </div>
 
-        </div>
+        </CartProvider>
         </body>
         </html>
     );

@@ -2,6 +2,7 @@
 import { FaSnowflake, FaTools, FaShoppingCart, FaPhone } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 // Хук для динамического изменения размера иконок
 const useIconSize = () => {
@@ -33,7 +34,7 @@ const Hero = () => {
     const infiniteAdvantages = [...advantages, ...advantages, ...advantages];
 
     return (
-        <section id="hero" className="relative py-10 sm:py-12 md:py-16 lg:py-20 mx-auto max-w-[1350px] bg-white overflow-hidden">
+        <section id="hero" className="relative mb-10 py-10 sm:py-12 md:py-16 lg:py-12 mx-auto max-w-[1350px] bg-white overflow-hidden">
             <div className="container mx-auto mt-8 sm:mt-12 md:mt-16 lg:mt-24 max-w-[1350px] h-auto lg:h-[800px] xl:h-[650px] px-4 sm:px-6 md:px-8 lg:px-12">
                 <div className="flex flex-col lg:flex-row items-center lg:items-stretch gap-8 lg:gap-12 xl:h-[650px] justify-center">
 
@@ -77,10 +78,15 @@ const Hero = () => {
                             className="mt-6 sm:mt-8 md:mt-10 flex flex-wrap justify-center sm:justify-center md:justify-start gap-4 sm:gap-5 md:gap-6 flex-col sm:flex-row"
                         >
                             {/* Первая кнопка */}
-                            <button className="bg-[#C7E07A] text-[#333333] font-semibold text-sm sm:text-base md:text-lg lg:text-base xl:text-lg py-3 px-6 sm:py-4 sm:px-8 md:py-4 md:px-10 lg:py-3 lg:px-8 xl:py-4 xl:px-10 rounded-full shadow-md border-2 border-[#C7E07A] transition-all duration-300
-        hover:bg-transparent hover:text-[#C7E07A]">
+                            <Link
+                                href="/catalog"
+                                className="bg-[#C7E07A] text-[#333333] font-semibold text-sm sm:text-base md:text-lg lg:text-base xl:text-lg
+    py-3 px-6 sm:py-4 sm:px-8 md:py-4 md:px-10 lg:py-3 lg:px-8 xl:py-4 xl:px-10 rounded-full shadow-md
+    border-2 border-[#C7E07A] transition-all duration-300 hover:bg-transparent hover:text-[#C7E07A]
+    flex items-center justify-center"
+                            >
                                 Каталог товаров
-                            </button>
+                            </Link>
 
                             {/* Вторая кнопка */}
                             <button className="bg-[#1E1E1E]/60 text-white font-semibold text-sm sm:text-base md:text-lg lg:text-base xl:text-lg py-3 px-6 sm:py-4 sm:px-8 md:py-4 md:px-10 lg:py-3 lg:px-8 xl:py-4 xl:px-10 rounded-full border-2 border-[#C7E07A] transition-all duration-300
@@ -91,12 +97,11 @@ const Hero = () => {
 
 
                     </div>
-
                     {/* Правый блок */}
                     <div className="flex flex-col w-full lg:w-[40%] md:w-full lg:max-w-[600px] gap-4 sm:gap-6 md:gap-8">
                         <div
                             className="relative overflow-hidden rounded-xl md:rounded-2xl lg:rounded-3xl shadow-xl transition-transform
-               hover:scale-105 hover:shadow-2xl">
+              hover:shadow-2xl">
                             <img
                                 src="/3.jpg"
                                 alt="Кондиционеры"
@@ -105,22 +110,23 @@ const Hero = () => {
                             />
                         </div>
 
-
                         <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6 md:gap-8">
                             {[
                                 {
                                     title: "Каталог кондиционеров",
-                                    description: "Широкий выбор моделей под любые задачи."
+                                    description: "Широкий выбор моделей под любые задачи.",
+                                    href: "/catalog",
                                 },
                                 {
                                     title: "Наши услуги",
-                                    description: "Монтаж, сервисное обслуживание, ремонт."
+                                    description: "Монтаж, сервисное обслуживание, ремонт.",
+                                    href: "/services",
                                 },
                             ].map((item, index) => (
                                 <div
                                     key={index}
                                     className="rounded-xl md:rounded-2xl lg:rounded-3xl shadow-lg p-5 sm:p-6 md:p-7 lg:p-8 flex flex-col justify-between
-            w-full sm:w-1/2 lg:w-[300px] min-h-[220px] relative transition-all duration-300 hover:shadow-xl group flex-1"
+                w-full sm:w-1/2 lg:w-[300px] min-h-[220px] relative transition-all duration-300 hover:shadow-xl group flex-1"
                                     style={{
                                         background: "linear-gradient(135deg, #F3F3ED, #EAEADE)",
                                         border: "2px solid #333",
@@ -132,18 +138,23 @@ const Hero = () => {
                                         <p className="mt-2 sm:mt-3 md:mt-4 lg:mt-5 text-xs sm:text-sm md:text-base lg:text-lg text-[#666]">{item.description}</p>
                                     </div>
 
-                                    <motion.button
-                                        initial={{opacity: 0, scale: 0.9, y: 5}}
-                                        animate={{opacity: 1, scale: 1, y: 0}}
-                                        transition={{duration: 2, ease: "easeOut"}}
-                                        className="mt-4 bg-[#C7E07A] text-[#333] font-medium py-2 px-4 rounded-full shadow-md hover:bg-[#B4CC6E] transition
-                lg:opacity-100 block w-full text-center"
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.9, y: 5 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        transition={{ duration: 2, ease: "easeOut" }}
                                     >
-                                        Перейти
-                                    </motion.button>
+                                        <Link
+                                            href={item.href}
+                                            className="mt-4 bg-[#C7E07A] text-[#333] font-medium py-2 px-4 rounded-full shadow-md hover:bg-[#B4CC6E] transition
+                    lg:opacity-100 block w-full text-center"
+                                        >
+                                            Перейти
+                                        </Link>
+                                    </motion.div>
                                 </div>
                             ))}
                         </div>
+
 
                     </div>
                 </div>

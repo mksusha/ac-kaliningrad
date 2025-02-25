@@ -1,12 +1,12 @@
 // scripts/seedServices.js
-import { createClient } from 'next-sanity';
 import 'dotenv/config';
+import { createClient } from 'next-sanity';
 
 const client = createClient({
-    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'your_project_id',
-    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
-    token: process.env.SANITY_API_TOKEN || 'your_write_token', // Токен с правами на запись
-    apiVersion: '2023-01-01',
+    projectId: "2y01oix2", // Ваш действительный projectId
+    dataset: "production", // Обычно используется production
+    token: "skGpyILeZJ7AnXVmDnuB3n2LcMYt3dl0Bhm4fV2BuBYeq98FtqqzmDou8rK9GQXcL816xaK2Q9pp76uD8w1I3rq8lCSeQ1iQ3pmcrqW1YgIRd1ynJfgdqvNyp3ie0djFncEp4uGyVI2uzaz8MK2bgGYjjXEAxU8A8QM3nDNSzfp7kAKyFWfZ",
+    apiVersion: "2025-02-11",   // Дата версии API
     useCdn: false,
 });
 

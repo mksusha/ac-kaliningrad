@@ -3,7 +3,7 @@ import { createClient } from "next-sanity";
 import { ProductGallery } from "../components/ImageCarousel";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
-
+import AddToCartTable from "../components/AddToCartTable";
 // Импортируем все необходимые компоненты таблицы (Shadcn UI)
 import {
     Table,
@@ -225,50 +225,8 @@ export default async function ProductPage({ params }: any) {
 
             </div>
 
-
-    {/* Таблица: модели по горизонтали, характеристики по вертикали */
-    }
-    <div className="container mx-auto px-4 py-8">
-        <Table className="border border-[#C7E07A] rounded-md overflow-hidden">
-            <TableCaption></TableCaption>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Характеристика</TableHead>
-                    {product.models?.map((modelName: string, i: number) => (
-                        <TableHead key={i}>{modelName}</TableHead>
-                    ))}
-                </TableRow>
-            </TableHeader>
-
-            <TableBody>
-                {specFields.map(({label, key}) => (
-                            <TableRow key={key}>
-                                <TableCell className="font-medium">{label}</TableCell>
-                                {product.models?.map((_: string, i: number) => {
-                                    let value = "—";
-                                    if (key === "cooling_capacity") {
-                                        // Разбиваем строку по разделителю ";"
-                                        const arr = product.cooling_capacity
-                                            ? product.cooling_capacity.split(";").map((s: string) => s.trim())
-                                            : [];
-                                        value = arr[i] || "—";
-                                    } else {
-                                        const arr: string[] = product.specs?.[key] || [];
-                                        value = arr[i] || "—";
-                                    }
-                                    return <TableCell key={i}>{value}</TableCell>;
-                                })}
-                            </TableRow>
-                        ))}
-                        <TableRow>
-                            <TableCell className="font-medium">Цена</TableCell>
-                            {product.models?.map((_: string, i: number) => {
-                                const value = product.prices?.[i] ?? "—";
-                                return <TableCell key={i}>{value}</TableCell>;
-                            })}
-                        </TableRow>
-                    </TableBody>
-                </Table>
+            <div className="container mx-auto px-4 py-8">
+                <AddToCartTable product={product} specFields={specFields}/>
             </div>
 
 

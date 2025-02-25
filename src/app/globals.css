@@ -64,6 +64,11 @@ p, span, a, li {
 html, body, #__next {
   height: 100%;
 }
+html, body {
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0!important;
+}
 
 body {
   display: flex;

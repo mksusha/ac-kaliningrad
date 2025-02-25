@@ -3,8 +3,8 @@ import {FaTelegramPlane, FaVk, FaWhatsapp} from "react-icons/fa"; // Иконк�
 
 const Footer = () => {
     return (
-        <footer className="max-w-[1350px] m-auto bg-[#F8F8F3] text-[#333333] rounded-t-[45px] mt-auto">
-            <div className="mt-10 mx-auto px-6 py-6 lg:px-[60px] lg:py-[30px]">
+        <footer className="max-w-[1350px] m-0 bg-[#F8F8F3] text-[#333333] rounded-t-[45px] mt-auto">
+            <div className=" mx-auto px-6 py-6 lg:px-[60px] lg:py-[30px]">
             {/* Верхний блок: логотип, навигация и соцсети */}
                 <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center text-center lg:text-left mb-6">
                     {/* Логотип */}

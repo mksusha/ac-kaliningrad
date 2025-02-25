@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Link from 'next/link'
 
 const Home: NextPage = () => {
     return (
@@ -25,7 +26,7 @@ const Home: NextPage = () => {
                 {/* Нижний блок: две карточки */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
                     {/* Левая карточка */}
-                    <div className="relative border border-[#333333] rounded-3xl p-6 flex flex-col bg-white flex-auto min-h-[300px] md:min-h-[350px] lg:min-h-[200px]">
+                    <div className="relative border border-[#333333] rounded-3xl p-6 flex flex-col bg-white flex-auto min-h-[300px] md:min-h-[350px] lg:min-h-[450px]">
                         <div className="absolute top-4 right-4 w-6 h-6 bg-black text-white flex items-center justify-center rounded-full font-bold text-base">+</div>
                         <h2 className="text-xl w-3/5 md:text-3xl font-bold uppercase mb-6">
                             БОЛЕЕ 5 ЛЕТ ОПЫТА В СФЕРЕ КЛИМАТИЧЕСКОГО ОБОРУДОВАНИЯ
@@ -34,9 +35,13 @@ const Home: NextPage = () => {
                             Мы установили сотни кондиционеров, обеспечивая надежное охлаждение
                             и обогрев для домов, офисов и коммерческих объектов.
                         </p>
-                        <button className="mt-auto border-2 border-[#333333] py-1.5 px-3 text-lg font-bold uppercase rounded-full hover:bg-[#C7E07A] active:bg-[#879a4f] transition-colors duration-200">
+                        <Link
+                            href="/services"
+                            className="mt-auto border-2 border-[#333333] py-1.5 px-3 text-lg font-bold uppercase rounded-full
+    hover:bg-[#C7E07A] active:bg-[#879a4f] transition-colors duration-200 text-center block"
+                        >
                             НАШИ УСЛУГИ
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Правая карточка с затемненным фоновым изображением */}
