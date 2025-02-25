@@ -1,15 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function SearchFilters({ onCategoryChangeAction }: { onCategoryChangeAction: (category: string) => void }) {
     const searchParams = useSearchParams();
-    const initialCategory = searchParams.get("category") || "";
+    const [category, setCategory] = useState<string>("");
 
     useEffect(() => {
-        onCategoryChangeAction(initialCategory);
-    }, [initialCategory, onCategoryChangeAction]); // Теперь корректное имя
+        const initialCategory = searchParams.get("category") || "";
+        if (initialCategory !== category) {
+            setCategory(initialCategory);
+            onCategoryChangeAction(initialCategory);
+        }
+    }, [searchParams, onCategoryChangeAction]); // Обновляем только в `useEffect`
 
     return null;
 }

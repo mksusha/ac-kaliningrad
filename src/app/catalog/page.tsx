@@ -68,7 +68,7 @@ export default function CatalogPage() {
             <Header />
             <main className="flex-1">
                 <div className="container max-w-[1350px] mx-auto p-6 flex flex-col gap-4">
-                    <SearchFilters onCategoryChangeAction={setCategory} />
+                    <SearchFilters onCategoryChangeAction={setCategory} /> {/* Клиентский компонент */}
                     <Filters onFilterChangeAction={handleFilterChange} />
                     <Catalog airConditioners={filteredData} />
                 </div>
