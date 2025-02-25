@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import {useState, useEffect, Suspense} from "react";
 import Header from "../components/Header";
 import Filters from "./components/Filters";
 import Catalog from "./components/Catalog";
@@ -68,7 +68,9 @@ export default function CatalogPage() {
             <Header />
             <main className="flex-1">
                 <div className="container max-w-[1350px] mx-auto p-6 flex flex-col gap-4">
-                    <SearchFilters onCategoryChangeAction={setCategory} /> {/* Клиентский компонент */}
+                    <Suspense fallback={<div>Загрузка...</div>}>
+                        <SearchFilters onCategoryChangeAction={setCategory} />
+                    </Suspense>
                     <Filters onFilterChangeAction={handleFilterChange} />
                     <Catalog airConditioners={filteredData} />
                 </div>
