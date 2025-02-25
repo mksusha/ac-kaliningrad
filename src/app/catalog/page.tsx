@@ -1,34 +1,32 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import Header from "../components/Header";
 import Filters from "./components/Filters";
 import Catalog from "./components/Catalog";
 import Footer from "../components/Footer";
 import { getAirConditioners } from "@/sanity/lib/fetchAirConditioners";
 import { AirConditioner } from "@/types/product";
+import SearchFilters from "./components/SearchFilters"; // Импортируем новый компонент
 
 export default function CatalogPage() {
     const [airConditioners, setAirConditioners] = useState<AirConditioner[]>([]);
     const [filteredData, setFilteredData] = useState<AirConditioner[]>([]);
-
-    const searchParams = useSearchParams();
-    const initialCategory = searchParams.get("category") || "";
+    const [category, setCategory] = useState<string>("");
 
     useEffect(() => {
         async function fetchData() {
             const data = await getAirConditioners();
             setAirConditioners(data);
 
-            if (initialCategory) {
-                setFilteredData(data.filter((item) => item.category === initialCategory));
+            if (category) {
+                setFilteredData(data.filter((item) => item.category === category));
             } else {
                 setFilteredData(data);
             }
         }
         fetchData();
-    }, [initialCategory]);
+    }, [category]); // Теперь обновляемся при изменении `category`
 
     // Фильтры
     const handleFilterChange = (filters: {
@@ -70,6 +68,7 @@ export default function CatalogPage() {
             <Header />
             <main className="flex-1">
                 <div className="container max-w-[1350px] mx-auto p-6 flex flex-col gap-4">
+                    <SearchFilters onCategoryChangeAction={setCategory} />
                     <Filters onFilterChangeAction={handleFilterChange} />
                     <Catalog airConditioners={filteredData} />
                 </div>
