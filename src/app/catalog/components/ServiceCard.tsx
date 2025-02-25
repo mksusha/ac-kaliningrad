@@ -3,14 +3,6 @@
 import React from "react";
 import { useCart } from "@/hooks/useCart";
 
-const theme = {
-    background: "#F8F8F3",
-    foreground: "#333333",
-    accent: "#A5FF00",
-    accentHover: "#8FDA00",
-    accentHover2: "#7AB200",
-};
-
 export interface Service {
     _id: string;
     title: string;
@@ -19,14 +11,14 @@ export interface Service {
     priceLabel?: string;
     slug: string;
     serviceType?: string;
+    imageUrl?: string;
 }
 
 interface ServiceCardProps {
     service: Service;
-    background: string;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ service, background }) => {
+const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
     const { addToCart } = useCart();
 
     const handleAddToCart = () => {
@@ -39,7 +31,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, background }) => {
             name: service.title,
             price: service.price,
             quantity: 1,
-            image: background,
+            image: service.imageUrl || "/default.jpg",
             slug: service.slug,
             type: "service" as const,
         };
@@ -50,14 +42,17 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, background }) => {
     return (
         <div className="relative flex flex-col border border-gray-200 rounded-2xl overflow-hidden shadow-md bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             {/* Блок с изображением */}
-            <div
-                className="w-full h-52 bg-cover bg-center"
-                style={{ backgroundImage: `url(${background})` }}
+            <img
+                src={service.imageUrl || "/default.jpg"}
+                alt={service.title}
+                className="w-full h-52 object-cover"
             />
 
             {/* Контент карточки */}
             <div className="p-6 flex bg-white flex-col flex-grow">
-                <h2 className="text-xl font-semibold bg-accent px-1 rounded-xl text-gray-900">{service.title}</h2>
+                <h2 className="text-xl font-semibold bg-accent px-1 rounded-xl text-gray-900">
+                    {service.title}
+                </h2>
                 {service.description && (
                     <p className="text-gray-600 text-sm mt-2">{service.description}</p>
                 )}
@@ -70,7 +65,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, background }) => {
             </div>
 
             {/* Кнопка */}
-            <div className="p-6  pt-0">
+            <div className="p-6 pt-0">
                 <button
                     className="w-full px-4 py-3 text-sm font-medium rounded-xl bg-foreground text-white transition-all duration-300 hover:bg-accentHover"
                     onClick={handleAddToCart}

@@ -1,4 +1,3 @@
-// /schemas/service.ts
 import { defineType, defineField } from 'sanity';
 
 export default defineType({
@@ -20,7 +19,6 @@ export default defineType({
             description: 'Перечень работ и другая подробная информация',
             rows: 4,
         }),
-
         defineField({
             name: 'price',
             title: 'Цена',
@@ -42,17 +40,9 @@ export default defineType({
             options: {
                 source: 'title',
                 maxLength: 96,
-                // можно добавить slugify, если хотите задать собственные правила:
-                // slugify: (input) =>
-                //   input
-                //     .toLowerCase()
-                //     .replace(/[^\w\s-]/g, '')
-                //     .replace(/\s+/g, '-')
-                //     .slice(0, 96),
             },
             validation: (Rule) => Rule.required(),
         }),
-
         defineField({
             name: 'serviceType',
             title: 'Тип услуги',
@@ -68,18 +58,36 @@ export default defineType({
                 ],
             },
         }),
+        // ✅ Добавлено поле изображения
+        defineField({
+            name: 'image',
+            title: 'Изображение услуги',
+            type: 'image',
+            options: {
+                hotspot: true, // Позволяет выбирать фокусную точку на изображении
+            },
+            fields: [
+                defineField({
+                    name: 'alt',
+                    title: 'Альтернативный текст',
+                    type: 'string',
+                    description: 'Описание изображения для SEO и доступности',
+                }),
+            ],
+        }),
     ],
     preview: {
         select: {
             title: 'title',
             price: 'price',
+            media: 'image', // Добавляем изображение в предпросмотр
         },
-        // Здесь мы типизируем аргумент 'selection'
-        prepare(selection: { title?: string; price?: number }) {
-            const { title, price } = selection;
+        prepare(selection: { title?: string; price?: number; media?: any }) {
+            const { title, price, media } = selection;
             return {
                 title: title ?? '',
                 subtitle: price ? `Цена: От ${price}₽` : 'Цена не указана',
+                media, // Теперь в Sanity Studio будет показано изображение
             };
         },
     },
