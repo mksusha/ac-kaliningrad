@@ -1,6 +1,7 @@
 import MapComponent from "@/app/components/MapComponent";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
+import Portfolio from "../components/Portfolio";
 
 export default function PortfolioPage() {
     return (
@@ -11,9 +12,11 @@ export default function PortfolioPage() {
             <p className="text-lg text-gray-600 text-center mb-8">
                 Здесь вы можете увидеть места, где мы устанавливали кондиционеры.
             </p>
-            <div className="w-full max-w-5xl px-4">
+            <div className="w-full max-w-[1350px] px-4">
                 <MapComponent />
+
             </div>
+            <Portfolio></Portfolio>
         </main>
             <Footer />
         </>

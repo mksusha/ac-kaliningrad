@@ -67,27 +67,22 @@ const Header = () => {
 
                     {/* Кнопка и Иконка для больших экранов */}
                     {/* Кнопка и Иконка для больших экранов */}
-                    <div className="hidden md:flex items-center space-x-4">
-                        <a
-                            href="#order"
-                            className="bg-accent hover:bg-accentHover text-black font-medium py-2 px-4 rounded-full transition"
-                        >
-                            Купить
-                        </a>
+                    <div className="hidden md:flex items-center">
                         <Link
                             href="/cart"
-                            className="relative bg-accent hover:bg-accentHover text-black font-medium py-2 px-4 rounded-full transition flex items-center justify-center"
-                            aria-label="Корзина"
+                            className="relative bg-accent hover:bg-accentHover text-black font-medium py-2 px-6 rounded-full transition flex items-center space-x-2"
+                            aria-label="Перейти в корзину"
                         >
-                            <FiShoppingCart size={20}/>
+                            <span>Купить</span>
+                            <FiShoppingCart size={20} />
                             {cartCount > 0 && (
-                                <span
-                                    className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent/70 text-xs font-bold text-foreground">
-        {cartCount}
-      </span>
+                                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent/70 text-xs font-bold text-foreground">
+                {cartCount}
+            </span>
                             )}
                         </Link>
                     </div>
+
 
 
                     {/* Бургер кнопка для маленьких экранов */}
@@ -134,22 +129,23 @@ const Header = () => {
                             Контакты
                         </a>
 
-                        {/* Кнопка и Иконка для мобильного меню */}
+                        {/* Кнопка "Купить" с корзиной для мобильного меню */}
                         <div className="flex flex-col space-y-4 mt-4">
-                            <a
-                                href="#order"
-                                className="bg-accent hover:bg-accentHover text-white font-medium py-2 px-4 rounded-full transition text-center"
-                            >
-                                Купить
-                            </a>
                             <Link
                                 href="/cart"
-                                className="bg-accent hover:bg-accentHover text-white font-medium py-2 px-4 rounded-full transition flex items-center justify-center"
-                                aria-label="Корзина"
+                                className="relative bg-accent hover:bg-accentHover text-foreground font-medium py-2 px-4 rounded-full transition flex items-center justify-center space-x-2"
+                                aria-label="Перейти в корзину"
                             >
-                                <FiShoppingCart size={20}/>
+                                <span>Купить</span>
+                                <FiShoppingCart size={20} />
+                                {cartCount > 0 && (
+                                    <span className="absolute -top-1 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-accent/70 text-base font-bold text-foreground">
+                {cartCount}
+            </span>
+                                )}
                             </Link>
                         </div>
+
                     </nav>
                 </div>
             </header>

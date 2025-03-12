@@ -3,6 +3,7 @@ import { FaSnowflake, FaTools, FaShoppingCart, FaPhone } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import RequestFormContainer from "@/app/components/RequestFormContainer";
 
 // Хук для динамического изменения размера иконок
 const useIconSize = () => {
@@ -62,7 +63,7 @@ const Hero = () => {
                             >
                                 {infiniteAdvantages.map((item, index) => (
                                     <div key={index}
-                                         className="flex bg-[#666] border-accent border-b-2 items-center sm:items-start h-28 sm:h-24 md:h-28 lg:h-40 w-[180px] sm:w-[160px] md:w-[180px] lg:w-[260px] gap-3 sm:gap-4 md:gap-5 p-3 sm:p-4 md:p-5 lg:p-6 rounded-lg md:rounded-xl lg:rounded-2xl shadow-lg hover:shadow-xl transition">
+                                         className="flex bg-[#666] border-accent border-b-2 items-center sm:items-start h-28 sm:h-28 md:h-36 lg:h-40 w-[180px] sm:w-[190px] md:w-[220px] lg:w-[260px] gap-3 sm:gap-4 md:gap-5 p-3 sm:p-4 md:p-5 lg:p-6 rounded-lg md:rounded-xl lg:rounded-2xl shadow-lg hover:shadow-xl transition">
                                         <div>{item.icon}</div>
                                         <div>
                                             <h3 className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-[#ffffff]">{item.title}</h3>
@@ -89,10 +90,7 @@ const Hero = () => {
                             </Link>
 
                             {/* Вторая кнопка */}
-                            <button className="bg-[#1E1E1E]/60 text-white font-semibold text-sm sm:text-base md:text-lg lg:text-base xl:text-lg py-3 px-6 sm:py-4 sm:px-8 md:py-4 md:px-10 lg:py-3 lg:px-8 xl:py-4 xl:px-10 rounded-full border-2 border-[#C7E07A] transition-all duration-300
-        hover:bg-background hover:text-[#333333] hover:border-background">
-                                Оставить заявку
-                            </button>
+                          <RequestFormContainer></RequestFormContainer>
                         </div>
 
 
@@ -113,8 +111,8 @@ const Hero = () => {
                         <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6 md:gap-8">
                             {[
                                 {
-                                    title: "Каталог кондиционеров",
-                                    description: "Широкий выбор моделей под любые задачи.",
+                                    title: "Товары",
+                                    description: "Широкий выбор кондиционеров под любые задачи.",
                                     href: "/catalog",
                                 },
                                 {
@@ -125,8 +123,8 @@ const Hero = () => {
                             ].map((item, index) => (
                                 <div
                                     key={index}
-                                    className="rounded-xl md:rounded-2xl lg:rounded-3xl shadow-lg p-5 sm:p-6 md:p-7 lg:p-8 flex flex-col justify-between
-                w-full sm:w-1/2 lg:w-[300px] min-h-[220px] relative transition-all duration-300 hover:shadow-xl group flex-1"
+                                    className="rounded-xl md:rounded-2xl lg:rounded-3xl shadow-lg p-5 sm:p-6 md:p-7 lg:p-5 flex flex-col justify-between
+                w-full sm:w-1/2  !sm:min-h-[220px] !md:min-h-[220px] relative transition-all duration-300 hover:shadow-xl group flex-1"
                                     style={{
                                         background: "linear-gradient(135deg, #F3F3ED, #EAEADE)",
                                         border: "2px solid #333",

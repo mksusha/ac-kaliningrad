@@ -50,7 +50,7 @@ export default function AddToCartTable({ product, specFields }: Props) {
         <Table className="border border-[#C7E07A] rounded-md overflow-hidden">
             <TableHeader>
                 <TableRow>
-                    <TableHead>Характеристика</TableHead>
+                    <TableHead>Модель</TableHead>
                     {product.models?.map((modelName: string, i: number) => (
                         <TableHead key={i}>{modelName}</TableHead>
                     ))}
@@ -76,25 +76,40 @@ export default function AddToCartTable({ product, specFields }: Props) {
                     </TableRow>
                 ))}
                 <TableRow>
-                    <TableCell className="font-medium">Цена</TableCell>
+                    <TableCell className="font-medium mt-2 flex flex-col justify-start">
+                        Цена
+                    </TableCell>
                     {product.models?.map((_: string, i: number) => {
                         const price = product.prices?.[i] ?? "—";
                         const itemId = `${product._id ?? product.title}_${i}`;
                         const inCart = cart.some((item) => item.id === itemId);
+                        const itemInCart = cart.find((item) => item.id === itemId);
+                        const quantityInCart = itemInCart ? itemInCart.quantity : 0;
                         const buttonClasses = inCart
-                            ? "px-4 py-2 rounded-md font-semibold text-[#333333] bg-transparent border border-[#C7E07A] cursor-default"
-                            : "px-4 py-2 rounded-md font-semibold text-[#333333] bg-[#C7E07A] border border-[#879a4f] transition-colors duration-200 cursor-pointer hover:bg-[#B4CC6E]";
+                            ? "px-4 py-2 rounded-xl font-semibold text-[#333333] bg-transparent border border-[#C7E07A] cursor-default relative"
+                            : "px-4 py-2 rounded-xl font-semibold text-[#333333] bg-[#C7E07A] border border-[#879a4f] transition-colors duration-200 cursor-pointer hover:bg-[#B4CC6E]";
 
                         return (
                             <TableCell key={i} className="space-y-2">
-                                <div>{price}</div>
+                                <div >{price}</div>
                                 {price !== "—" && (
                                     <button
                                         onClick={() => handleAddToCart(i)}
                                         className={buttonClasses}
                                         disabled={inCart}
                                     >
-                                        {inCart ? "В корзине" : "В корзину"}
+                                        {inCart ? (
+                                            <>
+                                                В корзине
+                                                {quantityInCart > 0 && (
+                                                    <span className="absolute -top-2 -right-2 rounded-full bg-[#C7E07A] text-white text-xs px-2 py-1">
+                                                        {quantityInCart}
+                                                    </span>
+                                                )}
+                                            </>
+                                        ) : (
+                                            "В корзину"
+                                        )}
                                     </button>
                                 )}
                             </TableCell>

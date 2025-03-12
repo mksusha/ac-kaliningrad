@@ -3,12 +3,13 @@ import { Nunito } from "next/font/google"; // Импортируем Nunito
 import "./globals.css";
 import Footer from "@/app/components/Footer";
 import { CartProvider } from "@/hooks/useCart";
+import { FiltersProvider } from "@/app/components/FiltersContext"; // Импортируем FiltersProvider
 
 // Подключение Nunito
 const nunito = Nunito({
-    subsets: ["latin"], // Выбор подмножества
-    weight: ["400", "600", "700", "800"], // Укажите нужные веса
-    variable: "--font-nunito", // Создаем CSS-переменную для шрифта
+    subsets: ["latin"],
+    weight: ["400", "600", "700", "800"],
+    variable: "--font-nunito",
 });
 
 export const metadata: Metadata = {
@@ -24,13 +25,12 @@ export default function RootLayout({
     return (
         <html lang="en" className={nunito.variable}>
         <body className="antialiased text-foreground flex flex-col min-h-screen">
-        {/* Оборачиваем детей в провайдер корзины */}
         <CartProvider>
-            {/* Контейнер с ограниченной шириной */}
-            <div className="max-w-[1350px] w-full mx-auto flex-1">
-                <main className="flex-1">{children}</main>
-            </div>
-
+            <FiltersProvider> {/* Добавили FiltersProvider */}
+                <div className="max-w-[1350px] w-full mx-auto flex-1">
+                    <main className="flex-1">{children}</main>
+                </div>
+            </FiltersProvider>
         </CartProvider>
         </body>
         </html>

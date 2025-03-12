@@ -54,9 +54,14 @@ const Home: NextPage = () => {
                             Мы работаем только с проверенными брендами, гарантируя долговечность
                             и эффективность каждого кондиционера.
                         </p>
-                        <button className="mt-auto border-2 border-[#C7E07A] py-1.5 px-3 text-lg font-bold uppercase rounded-full hover:bg-[#C7E07A] hover:text-black active:bg-[#879a4f] transition-colors duration-200">
+                        <Link
+                            href="/portfolio"
+                            className="mt-auto border-2 border-[#C7E07A] py-1.5 px-3 text-lg font-bold uppercase rounded-full
+    hover:bg-[#C7E07A] hover:text-black active:bg-[#879a4f] transition-colors duration-200 flex items-center justify-center"
+                        >
                             ПОДРОБНЕЕ
-                        </button>
+                        </Link>
+
                     </div>
                 </div>
             </div>

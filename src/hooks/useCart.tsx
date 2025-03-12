@@ -41,31 +41,35 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }, []);
 
+    // Обновляем корзину и синхронизируем с localStorage
     const updateCart = (updatedCart: CartItem[]) => {
         setCart(updatedCart);
         setCartCount(updatedCart.reduce((acc, item) => acc + item.quantity, 0));
         localStorage.setItem("cart", JSON.stringify(updatedCart));
-        window.dispatchEvent(new Event("cartUpdated"));
+        window.dispatchEvent(new Event("cartUpdated")); // Сигнализируем о обновлении корзины
     };
 
+    // Добавляем товар в корзину
     const addToCart = (item: CartItem) => {
         const updatedCart = [...cart];
         const existingIndex = updatedCart.findIndex((i) => i.id === item.id);
 
         if (existingIndex !== -1) {
-            updatedCart[existingIndex].quantity += item.quantity;
+            updatedCart[existingIndex].quantity += item.quantity; // Увеличиваем количество, если товар уже в корзине
         } else {
-            updatedCart.push(item);
+            updatedCart.push(item); // Добавляем новый товар
         }
 
         updateCart(updatedCart);
     };
 
+    // Удаляем товар из корзины
     const removeFromCart = (id: string) => {
         const updatedCart = cart.filter((item) => item.id !== id);
         updateCart(updatedCart);
     };
 
+    // Обновляем количество товара в корзине
     const updateQuantity = (id: string, newQuantity: number) => {
         const updatedCart = cart.map((item) =>
             item.id === id ? { ...item, quantity: newQuantity > 0 ? newQuantity : 1 } : item
@@ -73,6 +77,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         updateCart(updatedCart);
     };
 
+    // Очищаем корзину
     const clearCart = () => {
         updateCart([]);
     };
@@ -84,6 +89,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
+// Хук для использования контекста корзины
 export function useCart() {
     const context = useContext(CartContext);
     if (!context) {

@@ -1,66 +1,68 @@
-"use client";
-
-import {useState, useEffect, Suspense} from "react";
+'use client'
+import { useState, useEffect, Suspense } from "react";
 import Header from "../components/Header";
 import Filters from "./components/Filters";
 import Catalog from "./components/Catalog";
 import Footer from "../components/Footer";
 import { getAirConditioners } from "@/sanity/lib/fetchAirConditioners";
 import { AirConditioner } from "@/types/product";
-import SearchFilters from "./components/SearchFilters"; // Импортируем новый компонент
+import SearchFilters from "./components/SearchFilters";
+import { useFilters } from "@/app/components/FiltersContext"; // Контекст уже внутри FiltersProvider!
 
-export default function CatalogPage() {
+function CatalogContent() {
+    const { category, brand, search, management, refrigerant, setCategory, setBrand, setSearch, setManagement, setRefrigerant } = useFilters();
     const [airConditioners, setAirConditioners] = useState<AirConditioner[]>([]);
     const [filteredData, setFilteredData] = useState<AirConditioner[]>([]);
-    const [category, setCategory] = useState<string>("");
+    const [currentPage, setCurrentPage] = useState<number>(1);
 
     useEffect(() => {
         async function fetchData() {
             const data = await getAirConditioners();
             setAirConditioners(data);
-
-            if (category) {
-                setFilteredData(data.filter((item) => item.category === category));
-            } else {
-                setFilteredData(data);
-            }
         }
         fetchData();
-    }, [category]); // Теперь обновляемся при изменении `category`
+    }, []);
 
-    // Фильтры
-    const handleFilterChange = (filters: {
-        category: string;
-        brand: string;
-        search: string;
-        management: string;
-        refrigerant: string;
-    }) => {
-        let filtered = airConditioners;
+    useEffect(() => {
+        // Применяем фильтры только когда загружены данные
+        if (airConditioners.length) {
+            applyFilters(airConditioners);
+        }
+    }, [airConditioners, category, brand, search, management, refrigerant]);  // Следим за изменениями всех фильтров
 
-        if (filters.category) {
-            filtered = filtered.filter((item) => item.category === filters.category);
+    const applyFilters = (data: AirConditioner[]) => {
+        let filtered = data;
+
+        // Фильтрация по категории
+        if (category && category !== "all") {
+            filtered = filtered.filter((item) => item.category === category);
         }
 
-        if (filters.brand) {
-            filtered = filtered.filter((item) => item.brand === filters.brand);
+        // Фильтрация по бренду
+        if (brand && brand !== "all") {
+            filtered = filtered.filter((item) => item.brand === brand);
         }
 
-        if (filters.search) {
+        // Фильтрация по поисковому запросу
+        if (search) {
             filtered = filtered.filter((item) =>
-                item.title.toLowerCase().includes(filters.search.toLowerCase())
+                item.title.toLowerCase().includes(search.toLowerCase())
             );
         }
 
-        if (filters.management) {
-            filtered = filtered.filter((item) => item.management === filters.management);
+        // Фильтрация по типу управления
+        if (management && management !== "all") {
+            filtered = filtered.filter((item) => item.management === management);
         }
 
-        if (filters.refrigerant) {
-            filtered = filtered.filter((item) => item.refrigerant === filters.refrigerant);
+        // Фильтрация по хладагенту
+        if (refrigerant && refrigerant !== "all") {
+            filtered = filtered.filter((item) => item.refrigerant === refrigerant);
         }
 
+        // Устанавливаем отфильтрованные данные
         setFilteredData(filtered);
+        setCurrentPage(1); // Сбрасываем на первую страницу
     };
 
     return (
@@ -71,11 +73,27 @@ export default function CatalogPage() {
                     <Suspense fallback={<div>Загрузка...</div>}>
                         <SearchFilters onCategoryChangeAction={setCategory} />
                     </Suspense>
-                    <Filters onFilterChangeAction={handleFilterChange} />
-                    <Catalog airConditioners={filteredData} />
+                    <Filters
+                        onFilterChangeAction={(filters) => {
+                            setCategory(filters.category);
+                            setBrand(filters.brand);
+                            setSearch(filters.search);
+                            setManagement(filters.management);
+                            setRefrigerant(filters.refrigerant);
+                        }}
+                        onResetPagination={() => setCurrentPage(1)}
+                        airConditioners={airConditioners}  // Передаем массив кондиционеров
+                        applyFilters={applyFilters}        // Передаем функцию фильтрации
+                    />
+
+                    <Catalog airConditioners={filteredData} currentPage={currentPage} setCurrentPage={setCurrentPage} />
                 </div>
             </main>
             <Footer />
         </div>
     );
+}
+
+export default function CatalogPage() {
+    return <CatalogContent />;
 }

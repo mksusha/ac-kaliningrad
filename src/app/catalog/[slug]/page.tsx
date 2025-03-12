@@ -4,16 +4,6 @@ import { ProductGallery } from "../components/ImageCarousel";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import AddToCartTable from "../components/AddToCartTable";
-// Импортируем все необходимые компоненты таблицы (Shadcn UI)
-import {
-    Table,
-    TableHeader,
-    TableBody,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableCaption,
-} from "@/components/ui/table";
 
 const client = createClient({
     projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "your_project_id",
@@ -42,59 +32,59 @@ type ProductPageProps = {
         slug: string;
     };
 };
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params; // ✅ Дожидаемся params, так как Next.js 14+ делает его промисом
 
-export default async function ProductPage({ params }: any) {
-    if (!params?.slug) {
+    if (!slug) {
         return notFound();
     }
 
-    const { slug } = params;
-    // Запрос с дополнительными полями
     const query = `*[_type == "product" && slug.current == $slug][0]{
-      title,
-      "images": images[].asset->url,
-      management,
-      refrigerant,
-      areaOptions,
-      models,
-      prices,
-      cooling_capacity,
-      manufacturer{
-          "logo": logo.asset->url,
-          link,
-          desc
-      },
-      dealer {
-          link,
-          desc
-      },
-      specs {
-          cooling_power,
-          heating_power,
-          power_supply,
-          energy_efficiency,
-          heating_efficiency,
-          noise_level,
-          dimensions_inner,
-          dimensions_outer,
-          weight_inner,
-          weight_outer,
-          refrigerant_type,
-          refrigerant_charge,
-          pipe_liquid,
-          pipe_gas,
-          pipe_length,
-          pipe_difference,
-          working_temp_cooling,
-          working_temp_heating,
-          lifetime,
-          manufacturer_country
-      }
-  }`;
+        title,
+        "images": images[].asset->url,
+        management,
+        refrigerant,
+        areaOptions,
+        models,
+        prices,
+        cooling_capacity,
+        manufacturer{
+            "logo": logo.asset->url,
+            link,
+            desc
+        },
+        dealer {
+            link,
+            desc
+        },
+        specs {
+            cooling_power,
+            heating_power,
+            power_supply,
+            energy_efficiency,
+            heating_efficiency,
+            noise_level,
+            dimensions_inner,
+            dimensions_outer,
+            weight_inner,
+            weight_outer,
+            refrigerant_type,
+            refrigerant_charge,
+            pipe_liquid,
+            pipe_gas,
+            pipe_length,
+            pipe_difference,
+            working_temp_cooling,
+            working_temp_heating,
+            lifetime,
+            manufacturer_country
+        }
+    }`;
 
-    const product: any = await client.fetch(query, { slug });
+    const product = await client.fetch(query, { slug });
+
     if (!product) {
-        notFound();
+        return notFound();
     }
 
     // Формируем строку для "Диапазон температур"
@@ -135,7 +125,7 @@ export default async function ProductPage({ params }: any) {
             <Header/>
 
             {/* Блок заголовка */}
-            <div className="container max-w-[1350px] m-auto mx-auto px-4 mt-28">
+            <div className="container max-w-[1350px] m-auto mx-auto px-4 mt-32">
                 <div className="inline-block">
                     <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
                         {product.title}

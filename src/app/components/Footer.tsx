@@ -3,7 +3,7 @@ import {FaTelegramPlane, FaVk, FaWhatsapp} from "react-icons/fa"; // Иконк�
 
 const Footer = () => {
     return (
-        <footer className="max-w-[1350px] m-0 bg-[#F8F8F3] text-[#333333] rounded-t-[45px] mt-auto">
+        <footer className="max-w-[1350px] mt-8 m-0 bg-[#F8F8F3] text-[#333333] rounded-t-[45px] ">
             <div className=" mx-auto px-6 py-6 lg:px-[60px] lg:py-[30px]">
             {/* Верхний блок: логотип, навигация и соцсети */}
                 <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center text-center lg:text-left mb-6">
@@ -15,20 +15,20 @@ const Footer = () => {
                     {/* Навигация */}
                     <nav className="flex flex-col items-center space-y-4 lg:flex-row lg:space-y-0 lg:space-x-8">
                         <a
-                            href="#"
+                            href="/catalog"
                             className="hover:bg-[#C7E07A] hover:bg-opacity-30 px-2 py-1 rounded-xl transition-all duration-300 ease-in-out text-sm lg:text-base"
                         >
                             Каталог
                         </a>
 
                         <a
-                            href="#"
+                            href="/services"
                             className="hover:bg-[#C7E07A] hover:bg-opacity-30 px-2 py-1 rounded-xl transition-all duration-300 ease-in-out text-sm lg:text-base"
                         >
                             Услуги
                         </a>
                         <a
-                            href="#"
+                            href="/portfolio"
                             className="hover:bg-[#C7E07A] hover:bg-opacity-30 px-2 py-1 rounded-xl transition-all duration-300 ease-in-out text-sm lg:text-base"
                         >
                             Портфолио
@@ -40,7 +40,7 @@ const Footer = () => {
                             Отзывы
                         </a>
                         <a
-                            href="#"
+                            href="/contacts"
                             className="hover:bg-[#C7E07A] hover:bg-opacity-30 px-2 py-1 rounded-xl transition-all duration-300 ease-in-out text-sm lg:text-base"
                         >
                             Контакты
@@ -72,18 +72,10 @@ const Footer = () => {
 
                 {/* Центральный блок с контактами и формой */}
                 <div
-                    className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-6 space-y-6 lg:space-y-0">
+                    className="flex flex-col  items-center justify-center lg:flex-row lg:justify-between mb-6 space-y-6 lg:space-y-0">
                     {/* Контакты */}
                     <div className="text-center lg:text-left space-y-4"> {/* Увеличено пространство между элементами */}
-                        <p className="text-lg "> {/* Увеличен размер текста */}
-                            Почта:{" "}
-                            <a
-                                href={`mailto:info@company.com`}
-                                className="hover:underline"
-                            >
-                                info@company.com
-                            </a>
-                        </p>
+
                         <p className="text-lg">
                             Телефон:
                             <a
@@ -97,25 +89,16 @@ const Footer = () => {
                     </div>
 
 
-                    {/* Форма подписки */}
+                    {/* Блок с текстом */}
                     <div
-                        className="bg-[#333] rounded-[14px] p-4 w-full max-w-[500px] lg:max-w-[630px]"
-                    >
-                    <div className="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0 items-center">
-                            {/* Поле Email */}
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                className="border border-[#333333] rounded-[14px] px-4 py-3 w-full lg:w-1/2 text-[#333333] text-sm lg:text-base"
-                            />
-                            {/* Кнопка Подписаться */}
-                            <button
-                                className="bg-accent text-foreground border-2 border-transparent hover:bg-transparent hover:border-accent hover:text-accent px-4 py-3 w-full lg:w-1/2 rounded-[14px] text-sm lg:text-base transition-all duration-300 ease-in-out"
-                            >
-                                Подписаться на новости
-                            </button>
-                        </div>
+                        className="bg-[#222]/80 rounded-[14px] p-3 w-full max-w-[400px] lg:max-w-[800px] shadow-lg text-center flex items-center justify-center">
+                        <p className="text-background text-lg lg:text-base font-semibold">
+                            Предлагаем профессиональную установку и обслуживание кондиционеров в Калининграде.
+                            Найдем идеальное решение для вашего комфорта!
+                        </p>
                     </div>
+
+
                 </div>
 
                 {/* Полоска */}
