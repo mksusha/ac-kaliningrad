@@ -9,7 +9,7 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
-        // Проверка, что мы находимся в браузере
+        // Проверка на клиентскую среду
         if (typeof window !== "undefined") {
             const storedAuth = localStorage.getItem("auth");
             if (storedAuth === "true") {
