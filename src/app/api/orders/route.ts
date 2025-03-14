@@ -27,10 +27,9 @@ interface Order {
     total_cost: number;
     status: string;
 }
-
 export async function POST(req: NextRequest) {
     try {
-        const { firstName, lastName, email, items, totalCost }: OrderRequest = await req.json();
+        const { firstName, lastName, email, phone, items, totalCost }: OrderRequest & { phone: string } = await req.json();
 
         // Вставляем заказ и получаем его ID
         const { data: order, error: orderError } = await supabase
@@ -40,6 +39,7 @@ export async function POST(req: NextRequest) {
                     first_name: firstName,
                     last_name: lastName,
                     email,
+                    phone,  // Добавляем телефон
                     total_cost: totalCost,
                     status: "pending",
                 },

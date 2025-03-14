@@ -36,9 +36,12 @@ const CartPage = () => {
         e.preventDefault();
         setStatus("loading");
 
+        const cleanPhoneNumber = formData.phone.replace(/\D/g, ''); // Убираем все нецифровые символы
+
         try {
             const orderData = {
                 ...formData,
+                phone: cleanPhoneNumber,  // очищенный номер телефона
                 items: cart.map((item) => ({
                     name: item.name,
                     price: item.price,
@@ -57,7 +60,7 @@ const CartPage = () => {
             if (response.ok) {
                 setStatus("success");
                 clearCart();
-                setFormData({ firstName: "", lastName: "", email: "", phone: "" }); // Очистка формы
+                setFormData({ firstName: "", lastName: "", email: "", phone: "" });
             } else {
                 setStatus("error");
             }
@@ -246,9 +249,10 @@ const CartPage = () => {
                                         onChange={handleInputChange}
                                         className="w-full border p-2 mb-3 rounded-2xl focus:border-[#C7E07A] focus:ring-1 focus:ring-[#C7E07A] outline-none transition"
                                         required
-                                        pattern="^\+?[0-9\s\-\(\)]+$" // Простая валидация номера
+                                        pattern="^(\+7|8)\s?\(?\d{3}\)?\s?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}$"
                                         placeholder="+7 (900) 000-00-00"
                                     />
+
                                 </div>
 
                                 <button
