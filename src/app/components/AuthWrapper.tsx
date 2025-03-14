@@ -7,14 +7,14 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string>("");
+    const [isClient, setIsClient] = useState(false); // Для проверки клиентской среды
 
+    // useEffect выполняется только на клиенте
     useEffect(() => {
-        // Проверка на клиентскую среду
-        if (typeof window !== "undefined") {
-            const storedAuth = localStorage.getItem("auth");
-            if (storedAuth === "true") {
-                setIsAuthenticated(true);
-            }
+        setIsClient(true); // Устанавливаем флаг, что мы на клиенте
+        const storedAuth = localStorage.getItem("auth");
+        if (storedAuth === "true") {
+            setIsAuthenticated(true);
         }
     }, []);
 
@@ -24,14 +24,18 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
 
         if (login === envLogin && password === envPassword) {
             setIsAuthenticated(true);
-            if (typeof window !== "undefined") {
+            if (isClient) {
                 localStorage.setItem("auth", "true");
             }
-            setError("");  // Сбрасываем ошибку при успешном входе
+            setError(""); // Сбрасываем ошибку при успешном входе
         } else {
             setError("Неверные данные");
         }
     };
+
+    if (!isClient) {
+        return <div>Loading...</div>; // Показываем что-то на сервере, пока не определено состояние клиентского рендера
+    }
 
     return isAuthenticated || localStorage.getItem("auth") === "true" ? (
         <>{children}</>
