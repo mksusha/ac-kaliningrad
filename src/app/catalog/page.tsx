@@ -7,13 +7,14 @@ import Footer from "../components/Footer";
 import { getAirConditioners } from "@/sanity/lib/fetchAirConditioners";
 import { AirConditioner } from "@/types/product";
 import SearchFilters from "./components/SearchFilters";
-import { useFilters } from "@/app/components/FiltersContext"; // Контекст уже внутри FiltersProvider!
+import { useFilters } from "@/app/components/FiltersContext";
 
 function CatalogContent() {
     const { category, brand, search, management, refrigerant, setCategory, setBrand, setSearch, setManagement, setRefrigerant } = useFilters();
     const [airConditioners, setAirConditioners] = useState<AirConditioner[]>([]);
     const [filteredData, setFilteredData] = useState<AirConditioner[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [area, setArea] = useState<number | "">(""); // Добавляем площадь
 
     useEffect(() => {
         async function fetchData() {
@@ -24,45 +25,46 @@ function CatalogContent() {
     }, []);
 
     useEffect(() => {
-        // Применяем фильтры только когда загружены данные
         if (airConditioners.length) {
             applyFilters(airConditioners);
         }
-    }, [airConditioners, category, brand, search, management, refrigerant]);  // Следим за изменениями всех фильтров
+    }, [airConditioners, category, brand, search, management, refrigerant, area]); // Добавили area
 
     const applyFilters = (data: AirConditioner[]) => {
         let filtered = data;
 
-        // Фильтрация по категории
         if (category && category !== "all") {
             filtered = filtered.filter((item) => item.category === category);
         }
 
-        // Фильтрация по бренду
         if (brand && brand !== "all") {
             filtered = filtered.filter((item) => item.brand === brand);
         }
 
-        // Фильтрация по поисковому запросу
         if (search) {
             filtered = filtered.filter((item) =>
                 item.title.toLowerCase().includes(search.toLowerCase())
             );
         }
 
-        // Фильтрация по типу управления
         if (management && management !== "all") {
             filtered = filtered.filter((item) => item.management === management);
         }
 
-        // Фильтрация по хладагенту
         if (refrigerant && refrigerant !== "all") {
             filtered = filtered.filter((item) => item.refrigerant === refrigerant);
         }
 
-        // Устанавливаем отфильтрованные данные
+        // Фильтрация по площади
+        // Improved check for area filtering
+        if (area && typeof area === "number") {
+            filtered = filtered.filter((item) =>
+                Array.isArray(item.areaOptions) && item.areaOptions.some((opt) => opt >= area)
+            );
+        }
+
         setFilteredData(filtered);
-        setCurrentPage(1); // Сбрасываем на первую страницу
+        setCurrentPage(1);
     };
 
     return (
@@ -75,17 +77,19 @@ function CatalogContent() {
                     </Suspense>
                     <Filters
                         onFilterChangeAction={(filters) => {
+                            console.log("Фильтры из Filters:", filters); // Add logging to verify the filters
                             setCategory(filters.category);
                             setBrand(filters.brand);
                             setSearch(filters.search);
                             setManagement(filters.management);
                             setRefrigerant(filters.refrigerant);
+                            setArea(filters.area); // Update area filter
                         }}
                         onResetPagination={() => setCurrentPage(1)}
-                        airConditioners={airConditioners}  // Передаем массив кондиционеров
-                        applyFilters={applyFilters}        // Передаем функцию фильтрации
-                    />
+                        airConditioners={airConditioners}
+                        applyFilters={applyFilters}
 
+                    />
                     <Catalog airConditioners={filteredData} currentPage={currentPage} setCurrentPage={setCurrentPage} />
                 </div>
             </main>

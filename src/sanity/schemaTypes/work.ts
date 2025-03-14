@@ -21,7 +21,6 @@ export default defineType({
             },
             validation: (Rule) => Rule.required(),
         }),
-
         defineField({
             name: "description",
             title: "Описание",
@@ -65,7 +64,6 @@ export default defineType({
                 },
             ],
         }),
-
         defineField({
             name: "images",
             title: "Фотографии",
@@ -74,6 +72,13 @@ export default defineType({
             options: {
                 layout: "grid",
             },
+        }),
+        // Новое поле для адреса
+        defineField({
+            name: "address",
+            title: "Адрес",
+            type: "string", // Тип поля для хранения строки
+            description: "Введите адрес, связанный с этой работой", // Описание для подсказки
         }),
     ],
 });

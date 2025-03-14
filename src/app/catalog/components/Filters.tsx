@@ -16,6 +16,7 @@ interface FiltersProps {
         search: string;
         management: string;
         refrigerant: string;
+        area: number | "";
     }) => void;
     onResetPagination: () => void;
     airConditioners: any[]; // Массив кондиционеров
@@ -30,12 +31,13 @@ export default function Filters({
                                 }: FiltersProps) {
     const [isClient, setIsClient] = useState(false);
     const router = useRouter();
-    const { category, setCategory } = useFilters();
+    const {category, setCategory} = useFilters();
 
     const [brand, setBrand] = useState("all");
     const [search, setSearch] = useState("");
     const [management, setManagement] = useState("all");
     const [refrigerant, setRefrigerant] = useState("all");
+    const [area, setArea] = useState<number | "">(""); // Фильтр по площади
 
     useEffect(() => {
         setIsClient(true);
@@ -44,82 +46,122 @@ export default function Filters({
     useEffect(() => {
         if (typeof window !== "undefined") {
             const params = new URLSearchParams(window.location.search);
-            handleFilterChange(
-                params.get("category") || "all", // Считываем категорию из URL
-                params.get("brand") || "all",
-                params.get("search") || "",
-                params.get("management") || "all",
-                params.get("refrigerant") || "all"
-            );
+            setCategory(params.get("category") || "all");
+            setBrand(params.get("brand") || "all"); // Добавляем это
+            setSearch(params.get("search") || "");
+            setManagement(params.get("management") || "all");
+            setRefrigerant(params.get("refrigerant") || "all");
+            setArea(params.get("area") ? Number(params.get("area")) : "");
         }
     }, []);
 
-    // Обновление состояния фильтров и обновление URL
+    useEffect(() => {
+        handleFilterChange(category, brand, search, management, refrigerant, area);
+    }, [brand, category, search, management, refrigerant, area]);
+
     const handleFilterChange = (
         newCategory: string,
         newBrand: string,
         newSearch: string,
         newManagement: string,
-        newRefrigerant: string
+        newRefrigerant: string,
+        newArea: number | ""
     ) => {
-        setCategory(newCategory);
-        setBrand(newBrand);
-        setSearch(newSearch);
-        setManagement(newManagement);
-        setRefrigerant(newRefrigerant);
+        // Логирование всех значений фильтров
+        console.log("Изменение фильтров:", {
+            category: newCategory,
+            brand: newBrand,
+            search: newSearch,
+            management: newManagement,
+            refrigerant: newRefrigerant,
+            area: newArea,
+        });
 
-        // Сброс пагинации при изменении фильтров
+        // Сброс пагинации
         onResetPagination();
 
-        // Создаем объект фильтров
+        // Создание объекта с обновленными фильтрами
         const updatedFilters = {
             category: newCategory,
             brand: newBrand,
             search: newSearch,
             management: newManagement,
             refrigerant: newRefrigerant,
+            area: newArea,
         };
 
-        // Применение фильтров к данным кондиционеров
+        // Применение фильтров с помощью функции applyFilters
+        console.log("Применение фильтров к кондиционерам с фильтрами:", updatedFilters);
         if (typeof applyFilters === "function") {
             applyFilters(airConditioners, updatedFilters);
         } else {
             console.error("applyFilters is not defined or not a function");
         }
 
-        // Обновление URL с новыми параметрами
-        const queryParams = new URLSearchParams();
+        // Печать параметров перед обновлением URL
+        const queryParams = new URLSearchParams(window.location.search);
+        console.log("Параметры перед обновлением URL:", queryParams);
+
+        // Удаляем все параметры, которые не относятся к фильтрам (например, size)
+        queryParams.delete("size");
+
+        // Обновляем параметры фильтров
         queryParams.set("category", newCategory);
         queryParams.set("brand", newBrand);
         queryParams.set("search", newSearch);
         queryParams.set("management", newManagement);
         queryParams.set("refrigerant", newRefrigerant);
 
+        if (newArea) {
+            queryParams.set("area", String(newArea));
+        }
+
+        console.log("Итоговые параметры для URL:", queryParams.toString());
+
+        // Переход к новому URL с параметрами
         router.push(`/catalog?${queryParams.toString()}`);
 
-        // Отправка фильтров через onFilterChangeAction
+        // Вызов callback функции для обработки изменений фильтров
         onFilterChangeAction(updatedFilters);
     };
 
+
     const handleResetFilters = () => {
-        handleFilterChange("all", "all", "", "all", "all");
+        // Логирование сброса фильтров
+        console.log("Сбрасываем фильтры...");
+
+        // Сброс значений состояния
+        setArea(""); // Сбрасываем площадь
+        setSearch(""); // Сбрасываем поиск по названию
+        setBrand("all"); // Сбрасываем бренд
+        setCategory("all"); // Сбрасываем категорию
+        setManagement("all"); // Сбрасываем режим управления
+        setRefrigerant("all"); // Сбрасываем хладагент
+
+        // Сброс фильтров в URL и применение новых значений фильтров
+        console.log("Обновляем фильтры с новыми значениями:");
+        handleFilterChange("all", "all", "", "all", "all", "");
     };
+
 
     if (!isClient) return null;
 
     return (
-        <div className="mt-28 bg-accent border-2 border-accent max-w-[1350px] p-6 rounded-3xl flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div
+            className="mt-28 bg-accent border-2 border-accent max-w-[1350px] p-6 rounded-3xl flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+
             {/* Фильтр по категории */}
-            <div className="flex flex-col w-full md:w-auto">
-                <label className="mb-1 text-lg font-semibold text-foreground">Фильтр по категории</label>
+            <div className="flex flex-col w-full md:w-1/6">
+                <label className="mb-1 text-lg font-semibold text-foreground">Категория</label>
                 <Select
                     value={category}
                     onValueChange={(value) =>
-                        handleFilterChange(value, brand, search, management, refrigerant)
+                        handleFilterChange(value, brand, search, management, refrigerant, area)
                     }
                 >
-                    <SelectTrigger className="w-full md:w-48 h-10 px-3 border border-foreground/50 bg-foreground/50 text-white rounded-xl shadow-sm">
-                        <SelectValue placeholder="Все категории" />
+                    <SelectTrigger
+                        className="w-full h-10 px-3 border border-foreground/50 bg-foreground/50 text-white rounded-xl shadow-sm">
+                        <SelectValue placeholder="Все категории"/>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Все</SelectItem>
@@ -132,38 +174,48 @@ export default function Filters({
             </div>
 
             {/* Фильтр по бренду */}
-            <div className="flex flex-col w-full md:w-auto">
+            <div className="flex flex-col w-full md:w-1/6">
                 <label className="mb-1 text-lg font-semibold text-foreground">Фильтр по бренду</label>
                 <Select
                     value={brand}
-                    onValueChange={(value) =>
-                        handleFilterChange(category, value, search, management, refrigerant)
-                    }
+                    onValueChange={(value) => {
+                        console.log("Выбран новый бренд:", value);
+                        setBrand(value); // Добавляем обновление состояния
+                        handleFilterChange(category, value, search, management, refrigerant, area);
+                    }}
                 >
-                    <SelectTrigger className="w-full md:w-48 h-10 px-3 border border-foreground/50 bg-foreground/50 text-white rounded-xl shadow-sm">
-                        <SelectValue placeholder="Все бренды" />
+                    <SelectTrigger
+                        className="w-full h-10 px-3 border border-foreground/50 bg-foreground/50 text-white rounded-xl shadow-sm">
+                        <SelectValue placeholder="Все бренды"/>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Все бренды</SelectItem>
+                        <SelectItem value="AIRWAVE">AIRWAVE</SelectItem>
+                        <SelectItem value="Aurum">Aurum</SelectItem>
+                        <SelectItem value="Axioma">Axioma</SelectItem>
+                        <SelectItem value="BOSCH">BOSCH</SelectItem>
                         <SelectItem value="Daichi">Daichi</SelectItem>
-                        <SelectItem value="Midea">Midea</SelectItem>
                         <SelectItem value="Daikin">Daikin</SelectItem>
                         <SelectItem value="Kentatsu">Kentatsu</SelectItem>
+                        <SelectItem value="Midea">Midea</SelectItem>
+                        <SelectItem value="Primera">Primera</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
 
             {/* Фильтр по режиму управления */}
-            <div className="flex flex-col w-full md:w-auto">
+            <div className="flex flex-col w-full md:w-1/6">
                 <label className="mb-1 text-lg font-semibold text-foreground">Режим управления</label>
                 <Select
                     value={management}
-                    onValueChange={(value) =>
-                        handleFilterChange(category, brand, search, value, refrigerant)
-                    }
+                    onValueChange={(value) => {
+                        setManagement(value);
+                        handleFilterChange(category, brand, search, value, refrigerant, area);
+                    }}
                 >
-                    <SelectTrigger className="w-full md:w-48 h-10 px-3 border border-foreground/50 bg-foreground/50 text-white rounded-xl shadow-sm">
-                        <SelectValue placeholder="Все режимы" />
+                    <SelectTrigger
+                        className="w-full h-10 px-3 border border-foreground/50 bg-foreground/50 text-white rounded-xl shadow-sm">
+                        <SelectValue placeholder="Все режимы"/>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Все</SelectItem>
@@ -175,16 +227,18 @@ export default function Filters({
             </div>
 
             {/* Фильтр по типу хладагента */}
-            <div className="flex flex-col w-full md:w-auto">
+            <div className="flex flex-col w-full md:w-1/6">
                 <label className="mb-1 text-lg font-semibold text-foreground">Тип хладагента</label>
                 <Select
                     value={refrigerant}
-                    onValueChange={(value) =>
-                        handleFilterChange(category, brand, search, management, value)
-                    }
+                    onValueChange={(value) => {
+                        setRefrigerant(value);
+                        handleFilterChange(category, brand, search, management, value, area);
+                    }}
                 >
-                    <SelectTrigger className="w-full md:w-48 h-10 px-3 border border-foreground/50 bg-foreground/50 text-white rounded-xl shadow-sm">
-                        <SelectValue placeholder="Все хладагенты" />
+                    <SelectTrigger
+                        className="w-full h-10 px-3 border border-foreground/50 bg-foreground/50 text-white rounded-xl shadow-sm">
+                        <SelectValue placeholder="Все хладагенты"/>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Все</SelectItem>
@@ -195,17 +249,35 @@ export default function Filters({
                 </Select>
             </div>
 
-            {/* Поиск по названию */}
-            <div className="flex flex-col flex-grow">
-                <label className="mb-1 text-lg font-semibold text-foreground">Поиск по названию</label>
+            {/* Фильтр по площади */}
+            <div className="flex flex-col w-full md:w-1/6">
+                <label className="mb-1 text-lg font-semibold text-foreground">Площадь (м²)</label>
+                <input
+                    type="number"
+                    placeholder="Введите площадь"
+                    className="w-full h-10 px-3 border border-foreground/50 bg-foreground/50 text-white placeholder-white text-[0.9rem] rounded-xl shadow-sm"
+                    value={area}
+                    onChange={(e) => {
+                        const value = e.target.value ? Number(e.target.value) : "";
+                        setArea(value);
+                        handleFilterChange(category, brand, search, management, refrigerant, value);
+                    }}
+                />
+            </div>
+
+            {/* Фильтр по поиску */}
+            <div className="flex flex-col flex-grow w-full md:w-1/6">
+                <label className="mb-1 text-lg font-semibold text-foreground">Поиск</label>
                 <input
                     type="text"
                     placeholder="Введите название"
-                    className="w-full h-10 px-3 border border-foreground/50 bg-foreground/50 text-white placeholder-white/50 rounded-xl shadow-sm"
+                    className="w-full h-10 px-3 border border-foreground/50 bg-foreground/50 text-white placeholder-white text-[0.9rem]  rounded-xl shadow-sm"
                     value={search}
-                    onChange={(e) =>
-                        handleFilterChange(category, brand, e.target.value, management, refrigerant)
-                    }
+                    onChange={(e) => {
+                        const newSearch = e.target.value;
+                        setSearch(newSearch); // Сначала обновляем состояние
+                        handleFilterChange(category, brand, newSearch, management, refrigerant, area); // Затем вызываем фильтрацию
+                    }}
                 />
             </div>
 

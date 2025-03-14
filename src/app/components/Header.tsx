@@ -122,10 +122,10 @@ const Header = () => {
                         <a href="/portfolio" className="text-foreground hover:text-accentHover">
                             Портфолио
                         </a>
-                        <a href="#reviews" className="text-foreground hover:text-accentHover">
+                        <a href="/reviews" className="text-foreground hover:text-accentHover">
                             Отзывы
                         </a>
-                        <a href="#contacts" className="text-foreground hover:text-accentHover">
+                        <a href="/contacts" className="text-foreground hover:text-accentHover">
                             Контакты
                         </a>
 

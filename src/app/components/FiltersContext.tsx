@@ -13,6 +13,8 @@ interface FiltersContextType {
     setManagement: (management: string) => void;
     refrigerant: string;
     setRefrigerant: (refrigerant: string) => void;
+    area: number | "";  // Добавляем фильтр по площади
+    setArea: (area: number | "") => void;
 }
 
 // Создаём контекст
@@ -34,10 +36,24 @@ export const FiltersProvider = ({ children }: { children: ReactNode }) => {
     const [search, setSearch] = useState("");
     const [management, setManagement] = useState("all");
     const [refrigerant, setRefrigerant] = useState("all");
+    const [area, setArea] = useState<number | "">(""); // Состояние для площади
 
     return (
         <FiltersContext.Provider
-            value={{ category, setCategory, brand, setBrand, search, setSearch, management, setManagement, refrigerant, setRefrigerant }}
+            value={{
+                category,
+                setCategory,
+                brand,
+                setBrand,
+                search,
+                setSearch,
+                management,
+                setManagement,
+                refrigerant,
+                setRefrigerant,
+                area,  // Добавили в контекст
+                setArea,
+            }}
         >
             {children}
         </FiltersContext.Provider>

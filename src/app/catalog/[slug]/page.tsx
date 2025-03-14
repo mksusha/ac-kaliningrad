@@ -4,6 +4,7 @@ import { ProductGallery } from "../components/ImageCarousel";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import AddToCartTable from "../components/AddToCartTable";
+import { FaYoutube } from "react-icons/fa";
 
 const client = createClient({
     projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "your_project_id",
@@ -177,40 +178,60 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 {/* Правая колонка (блок с кнопками) - 3 столбца */}
                 <div className="md:col-span-3 flex flex-col justify-center gap-4">
                     {/* Блок Производитель */}
-                    <div className="p-6 border border-[#C7E07A] bg-[#333333] rounded-2xl">
-                        <h2 className="text-2xl font-bold mb-4 text-white">Производитель</h2>
+                    {/*<div className="p-6 border border-[#C7E07A] bg-[#333333] rounded-2xl">*/}
+                    {/*    <h2 className="text-2xl font-bold mb-4 text-white">Производитель</h2>*/}
+                    {/*    <p className="mb-4 text-white">*/}
+                    {/*        {product.manufacturer?.desc || "—"}*/}
+                    {/*    </p>*/}
+                    {/*    {product.manufacturer?.link && (*/}
+                    {/*        <a*/}
+                    {/*            href={product.manufacturer.link}*/}
+                    {/*            target="_blank"*/}
+                    {/*            rel="noopener noreferrer"*/}
+                    {/*            className="inline-block w-full px-4 py-2 rounded-3xl font-semibold bg-[#C7E07A] text-white border border-[#C7E07A] transition-colors duration-200 hover:bg-[#B4CC6E] hover:border-[#879a4f]"*/}
+                    {/*        >*/}
+                    {/*            Сайт производителя*/}
+                    {/*        </a>*/}
+                    {/*    )}*/}
+                    {/*</div>*/}
+
+                    {/* Кнопка "Узнать больше на YouTube" */}
+                    <div className="p-6 border border-[#C7E07A] bg-[#333333] rounded-2xl mt-4">
+                        <h2 className="text-2xl font-bold mb-4 text-white flex items-center">
+                            Узнать больше на YouTube
+                        </h2>
                         <p className="mb-4 text-white">
-                            {product.manufacturer?.desc || "—"}
+                            Посмотрите видео о {product.title} на YouTube, чтобы узнать больше о его характеристиках и
+                            преимуществах.
                         </p>
-                        {product.manufacturer?.link && (
-                            <a
-                                href={product.manufacturer.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-block w-full px-4 py-2 rounded-3xl font-semibold bg-[#C7E07A] text-white border border-[#C7E07A] transition-colors duration-200 hover:bg-[#B4CC6E] hover:border-[#879a4f]"
-                            >
-                                Сайт производителя
-                            </a>
-                        )}
+                        <a
+                            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(product.title)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center w-full px-4 py-2 rounded-3xl font-semibold bg-[#C7E07A] text-foreground border border-[#C7E07A] transition-colors duration-200 hover:bg-[#B4CC6E] hover:border-[#879a4f]"
+                        >
+                            Перейти на YouTube
+                            <FaYoutube className="text-foreground text-2xl ml-1.5"/> {/* Иконка YouTube */}
+                        </a>
                     </div>
 
-                    {/* Блок Дилер */}
-                    <div className="p-6 border border-[#C7E07A] bg-[#333333] rounded-2xl">
-                        <h2 className="text-2xl font-bold mb-4 text-white">Дилер</h2>
-                        <p className="mb-4 text-white">
-                            {product.dealer?.desc || "—"}
-                        </p>
-                        {product.dealer?.link && (
-                            <a
-                                href={product.dealer.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-block w-full px-4 py-2 rounded-3xl font-semibold bg-[#C7E07A] text-white border border-[#C7E07A] transition-colors duration-200 hover:bg-[#B4CC6E] hover:border-[#879a4f]"
-                            >
-                                Сайт дилера
-                            </a>
-                        )}
-                    </div>
+                    {/*/!* Блок Дилер *!/*/}
+                    {/*<div className="p-6 border border-[#C7E07A] bg-[#333333] rounded-2xl">*/}
+                    {/*    <h2 className="text-2xl font-bold mb-4 text-white">Дилер</h2>*/}
+                    {/*    <p className="mb-4 text-white">*/}
+                    {/*        {product.dealer?.desc || "—"}*/}
+                    {/*    </p>*/}
+                    {/*    {product.dealer?.link && (*/}
+                    {/*        <a*/}
+                    {/*            href={product.dealer.link}*/}
+                    {/*            target="_blank"*/}
+                    {/*            rel="noopener noreferrer"*/}
+                    {/*            className="inline-block w-full px-4 py-2 rounded-3xl font-semibold bg-[#C7E07A] text-white border border-[#C7E07A] transition-colors duration-200 hover:bg-[#B4CC6E] hover:border-[#879a4f]"*/}
+                    {/*        >*/}
+                    {/*            Сайт дилера*/}
+                    {/*        </a>*/}
+                    {/*    )}*/}
+                    {/*</div>*/}
                 </div>
 
             </div>

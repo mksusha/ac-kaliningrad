@@ -9,7 +9,8 @@ export interface AirConditioner {
         cooling_power: string;
     };
     prices: string[];
-    slug: string; // добавляем slug
-    management?: string; // опциональное свойство для режима управления
-    refrigerant?: string; // опциональное свойство для типа хладагента
+    slug: string;
+    management?: string;
+    refrigerant?: string;
+    areaOptions?: number[]; // Теперь у кондиционеров есть возможные площади
 }

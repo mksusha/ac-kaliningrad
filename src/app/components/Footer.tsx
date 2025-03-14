@@ -1,5 +1,6 @@
 'use client'
 import {FaTelegramPlane, FaVk, FaWhatsapp} from "react-icons/fa"; // Иконки для Telegram и VK
+import Image from 'next/image';
 
 const Footer = () => {
     return (
@@ -34,7 +35,7 @@ const Footer = () => {
                             Портфолио
                         </a>
                         <a
-                            href="#"
+                            href="/reviews"
                             className="hover:bg-[#C7E07A] hover:bg-opacity-30 px-2 py-1 rounded-xl transition-all duration-300 ease-in-out text-sm lg:text-base"
                         >
                             Отзывы
@@ -46,7 +47,6 @@ const Footer = () => {
                             Контакты
                         </a>
                     </nav>
-
                     {/* Соцсети */}
                     <div className="flex justify-center space-x-4 mt-4 lg:mt-0">
                         <a
@@ -59,14 +59,30 @@ const Footer = () => {
                         </a>
 
                         <a
-                            href="https://wa.me/79581691352" // Формат ссылки для WhatsApp
+                            href="https://wa.me/79581691352"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-[#333333] hover:text-[#B4CC6E] hover:bg-[#C7E07A] hover:bg-opacity-20 px-2 py-1 rounded-xl transition-all duration-300 ease-in-out text-2xl"
                         >
                             <FaWhatsapp />
                         </a>
+
+                        <a
+                            href="https://www.avito.ru/user/7d963573f9ab4eeaaf03b68604faada8/profile/all"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#333333] hover:text-[#B4CC6E] hover:bg-[#C7E07A] hover:bg-opacity-20 px-2 py-1 rounded-xl transition-all duration-300 ease-in-out text-2xl"
+                        >
+                            <Image
+                                src="/Avito_logo1.svg" // Путь к вашему логотипу
+                                alt="Avito"
+                                width={25} // Размер логотипа (можно настроить)
+                                height={25} // Размер логотипа (можно настроить)
+                                className="hover:opacity-80 transition duration-300"
+                            />
+                        </a>
                     </div>
+
 
                 </div>
 

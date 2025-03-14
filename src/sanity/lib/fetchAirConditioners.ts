@@ -20,7 +20,7 @@ export async function getAirConditioners(): Promise<AirConditioner[]> {
     specs,
     prices,
       management,
-      
+      areaOptions,
     refrigerant,
   }`);
 }

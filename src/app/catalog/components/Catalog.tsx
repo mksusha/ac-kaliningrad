@@ -31,6 +31,7 @@ export default function Catalog({
     const [category, setCategory] = useState<string | undefined>(undefined);
     const [brand, setBrand] = useState<string | undefined>(undefined);
     const [search, setSearch] = useState<string>("");
+    const [area, setArea] = useState<number | "">(""); // Состояние для фильтра по площади
 
     const itemsPerPage = 9;
     const [filteredAirConditioners, setFilteredAirConditioners] = useState<AirConditioner[]>(airConditioners);
@@ -44,29 +45,63 @@ export default function Catalog({
     }, [airConditioners]);
 
     // Функция для фильтрации
-    const applyFilters = (data: AirConditioner[], filters: { category: string, brand: string, search: string }) => {
+    const applyFilters = (
+        data: AirConditioner[],
+        filters: { category: string; brand: string; search: string; area: number | "" }
+    ) => {
+
         let filtered = data;
 
+        // Фильтрация по категории
         if (filters.category && filters.category !== "all") {
-            filtered = filtered.filter((item) => item.category === filters.category);
-        }
-        if (filters.brand && filters.brand !== "all") {
-            filtered = filtered.filter((item) => item.brand === filters.brand);
-        }
-        if (filters.search) {
-            filtered = filtered.filter((item) =>
-                item.title.toLowerCase().includes(filters.search.toLowerCase())
-            );
+            filtered = filtered.filter((item) => {
+                return item.category === filters.category;
+            });
         }
 
-        setFilteredAirConditioners(filtered);
-        setCurrentPage(1);
+        // Фильтрация по бренду
+        if (filters.brand && filters.brand !== "all") {
+            filtered = filtered.filter((item) => {
+                return item.brand === filters.brand;
+            });
+        }
+
+        // Фильтрация по поисковому запросу
+        if (filters.search) {
+            filtered = filtered.filter((item) => {
+                return item.title.toLowerCase().includes(filters.search.toLowerCase());
+            });
+        }
+
+        // Фильтрация по площади, только если передано корректное значение
+        // Фильтрация по площади
+        if (filters.area !== "" && typeof filters.area === "number") {
+            filtered = filtered.filter((item) => {
+                if (!item.areaOptions) return false;
+
+                return item.areaOptions.some((areaOption) => {
+                    const numericAreaOption = typeof areaOption === "string" ? Number(areaOption) : areaOption;
+                    const numericFilterArea = typeof filters.area === "string" ? Number(filters.area) : filters.area;
+                    const areaValues = item.areaOptions || [];
+                    const matchesArea = !filters.area || areaValues.includes(filters.area);
+
+                    console.log(`⚖️ Сравниваем ${numericAreaOption} >= ${numericFilterArea}`);
+                    return numericAreaOption >= numericFilterArea;
+                });
+            });
+        }
+
+
+        // Логируем отфильтрованные данные
+
+        return filtered;
     };
+
 
     // Когда меняется любой фильтр, применяем фильтрацию
     useEffect(() => {
-        applyFilters(airConditioners, { category: category || "all", brand: brand || "all", search });
-    }, [category, brand, search, airConditioners]);
+        applyFilters(airConditioners, { category: category || "all", brand: brand || "all", search, area });
+    }, [category, brand, search, area, airConditioners]);
 
     const sortedAirConditioners = [...filteredAirConditioners].sort((a, b) => {
         if (sortType === "name-asc") return a.title.localeCompare(b.title);
@@ -126,6 +161,7 @@ export default function Catalog({
                 </Select>
             </div>
 
+
             {sortedAirConditioners.length === 0 ? (
                 <SkeletonGrid />
             ) : (
@@ -143,6 +179,8 @@ export default function Catalog({
                                             src={item.imageUrl}
                                             alt={item.title}
                                             className="w-auto h-full object-contain"
+                                            loading="lazy"
+
                                         />
                                     </div>
                                     <div className="p-4 bg-foreground w-full h-full flex flex-col transition-all duration-300 group-hover:bg-foreground/90 flex-grow">
@@ -228,5 +266,6 @@ function SkeletonGrid() {
                 </div>
             ))}
         </div>
+
     );
 }

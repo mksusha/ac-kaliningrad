@@ -1,12 +1,13 @@
 "use client"; // 💡 Делаем этот компонент клиентским
-
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation"; // ✅ Используем useParams()
+import { useParams } from "next/navigation";
 import { fetchWorkBySlug } from "@/sanity/lib/fetchWorks";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { type PortableTextBlock } from "sanity";
+import Link from "next/link"; // Для добавления ссылок в хлебные крошки
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink } from "@/components/ui/breadcrumb"; // Импортируем компоненты хлебных крошек
 
 const components: PortableTextComponents = {
     block: {
@@ -49,8 +50,26 @@ export default function WorkDetails() {
         <div className="flex flex-col bg-white">
             <Header />
 
-            <main className="flex-grow container mt-24 mx-auto px-6 pt-6 pb-0">
-                <h1 className="text-4xl font-semibold text-center mb-8">{work.title}</h1>
+            <main className="flex-grow container mt-14 md:mt-24 mx-auto px-6 pt-6 pb-0">
+                {/* Хлебные крошки */}
+                <Breadcrumb className="mb-3">
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink asChild>
+                                <Link href="/portfolio" className="text-gray-500 hover:text-[#C7E07A]">Портфолио</Link>
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+                        {/* Разделитель */}
+                        <BreadcrumbItem>
+                            <span className="text-gray-600">/</span>
+                        </BreadcrumbItem>
+                        <BreadcrumbItem>
+                            <span className="text-gray-600">{work.address}</span>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
+
+                <h1 className="text-4xl font-semibold text-left mb-8">{work.title}</h1>
 
                 {/* Галерея изображений */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -70,7 +89,7 @@ export default function WorkDetails() {
                 </div>
 
                 {/* Описание работы */}
-                <div className="text-gray-700 text-lg text-center mt-10">
+                <div className="text-gray-700 text-lg text-left mt-10">
                     <PortableText
                         value={(Array.isArray(work.description) ? work.description : []) as PortableTextBlock[]}
                         components={components}
