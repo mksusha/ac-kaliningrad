@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import AuthWrapper from "../components/AuthWrapper";
 
 interface Request {
     id: number;
@@ -105,99 +106,126 @@ const RequestsPage = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-6">Все заявки и заказы</h1>
+        <AuthWrapper>
+            <div className="max-w-4xl my-8 md:my-12 mx-auto p-4 sm:p-2">
+                <h1 className="text-3xl sm:text-2xl font-bold mb-6">Все заявки и заказы</h1>
 
-            {error && <p className="text-red-500">{error}</p>}
+                {error && <p className="text-red-500">{error}</p>}
 
-            <div className="flex space-x-4 mb-6">
-                <button
-                    className={`px-4 py-2 rounded-md ${activeTab === "requests" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-                    onClick={() => setActiveTab("requests")}
-                >
-                    Заявки
-                </button>
-                <button
-                    className={`px-4 py-2 rounded-md ${activeTab === "orders" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-                    onClick={() => setActiveTab("orders")}
-                >
-                    Заказы
-                </button>
-            </div>
+                {/* Кнопки переключения вкладок */}
+                <div className="flex sm:space-x-4 mb-6 sm:flex-row sm:justify-start sm:w-full sm:gap-4 sm:mb-6">
+                    <button
+                        className={`px-4 py-2 sm:px-3 mr-2 sm:py-1 w-full sm:w-auto rounded-md ${
+                            activeTab === "requests" ? "bg-accent text-foreground" : "bg-foreground/20"
+                        }`}
+                        onClick={() => setActiveTab("requests")}
+                    >
+                        Заявки
+                    </button>
+                    <button
+                        className={`px-4 py-2 sm:px-3 sm:py-1 w-full sm:w-auto rounded-md ${
+                            activeTab === "orders" ? "bg-accent text-foreground" : "bg-foreground/20"
+                        }`}
+                        onClick={() => setActiveTab("orders")}
+                    >
+                        Заказы
+                    </button>
+                </div>
+                {/* Фильтры */}
+                <div className="flex flex-col space-y-4 w-full md:w-auto lg:w-auto md:flex-row justify-start mb-4">
+                    <button
+                        className="px-4 py-2 sm:px-3 sm:py-1 w-full sm:w-auto bg-foreground/20 rounded-md"
+                        onClick={() => setSortOrder(sortOrder === "new" ? "old" : "new")}
+                    >
+                        {sortOrder === "new" ? "Сначала старые" : "Сначала новые"}
+                    </button>
+                    <label className="flex items-center md:ml-5 sm:mt-0 mt-2 text-base">
+                        <input
+                            type="checkbox"
+                            className="mr-2"
+                            checked={hideViewed}
+                            onChange={() => setHideViewed(!hideViewed)}
+                        />
+                        Скрыть просмотренные
+                    </label>
+                </div>
 
-            <div className="flex justify-between mb-4">
-                <button
-                    className="px-4 py-2 bg-gray-300 rounded-md"
-                    onClick={() => setSortOrder(sortOrder === "new" ? "old" : "new")}
-                >
-                    {sortOrder === "new" ? "Сначала старые" : "Сначала новые"}
-                </button>
-                <label className="flex items-center">
-                    <input
-                        type="checkbox"
-                        className="mr-2"
-                        checked={hideViewed}
-                        onChange={() => setHideViewed(!hideViewed)}
-                    />
-                    Скрыть просмотренные
-                </label>
-            </div>
+
+
+
+            {/* Блок заявок */}
             {activeTab === "requests" && (
                 <div>
-                    <h2 className="text-2xl font-semibold mb-4">Заявки</h2>
+                    <h2 className="text-2xl sm:text-xl font-semibold mb-4">Заявки</h2>
                     {requests.filter(r => !hideViewed || !r.viewed).length === 0 ? (
                         <p>Нет заявок</p>
                     ) : (
                         <ul className="space-y-4">
                             {requests.filter(r => !hideViewed || !r.viewed).sort(sortByDate).map((request) => (
-                                <li key={request.id} className={`border p-4 rounded-md shadow ${request.viewed ? "bg-gray-200" : "bg-white"}`}>
+                                <li
+                                    key={request.id}
+                                    className={`border p-4 sm:p-3 rounded-md shadow ${
+                                        request.viewed ? "bg-foreground/10" : "bg-white"
+                                    }`}
+                                >
                                     <p><strong>Телефон:</strong> {request.phone}</p>
                                     <p><strong>Email:</strong> {request.email}</p>
                                     <p><strong>Тип запроса:</strong> {request.request_type}</p>
                                     <p><strong>Сообщение:</strong> {request.message}</p>
-                                    <p className="text-sm text-gray-500">Дата: {new Date(request.created_at).toLocaleString()}</p>
-                                    <button onClick={() => toggleViewed(request.id, "requests")} className="bg-green-500 text-white px-3 py-1 rounded-md mr-2">
-                                        {request.viewed ? "Снять просмотр" : "Просмотрено"}
-                                    </button>
-                                    <button onClick={() => deleteItem(request.id, "requests")} className="bg-red-500 text-white px-3 py-1 rounded-md">
-                                        Удалить
-                                    </button>
+                                    <p className="text-sm mb-2 text-gray-500">Дата: {new Date(request.created_at).toLocaleString()}</p>
+
+                                    <div className="flex flex-wrap gap-2">
+                                        <button onClick={() => toggleViewed(request.id, "requests")}
+                                                className="bg-accent text-foreground px-3 py-1 rounded-md">
+                                            {request.viewed ? "Снять просмотр" : "Просмотрено"}
+                                        </button>
+                                        <button onClick={() => deleteItem(request.id, "requests")}
+                                                className="bg-foreground text-white px-3 py-1 rounded-md">
+                                            Удалить
+                                        </button>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
                     )}
                 </div>
             )}
+
             {/* Блок заказов */}
             {activeTab === "orders" && (
                 <div>
-                    <h2 className="text-2xl font-semibold mb-4">Заказы</h2>
+                    <h2 className="text-2xl sm:text-xl font-semibold mb-4">Заказы</h2>
                     {orders.length === 0 ? (
                         <p>Нет заказов</p>
                     ) : (
-                        <ul className="space-y-4">
+                        <ul className="space-y-4 overflow-x-auto">
                             {orders.filter(o => !hideViewed || !o.viewed).sort(sortByDate).map((order) => (
-                                <li key={order.id} className="border p-4 rounded-md shadow bg-white">
+                                <li key={order.id} className="border p-4 sm:p-3 rounded-md shadow bg-white">
                                     <p>
                                         <strong>Клиент:</strong> {order.first_name} {order.last_name} ({order.email}, {order.phone})
                                     </p>
                                     <p><strong>Сумма:</strong> {order.total_cost} руб.</p>
                                     <p><strong>Статус:</strong> {order.status}</p>
-                                    <p className="text-sm text-gray-500">Дата: {new Date(order.created_at).toLocaleString()}</p>
+                                    <p className="text-sm mb-2 text-gray-500">Дата: {new Date(order.created_at).toLocaleString()}</p>
 
-                                    <button onClick={() => toggleOrderDetails(order.id)} className="bg-blue-500 text-white px-3 py-1 rounded-md">
+                                    {/* Кнопка раскрытия деталей заказа */}
+                                    <button
+                                        onClick={() => toggleOrderDetails(order.id)}
+                                        className="bg-background mb-2 md:mb-0 border border-foreground text-foreground mr-2 px-3 py-1 rounded-md w-full sm:w-full"
+                                    >
                                         {expandedOrders[order.id] ? "Скрыть детали" : "Показать детали"}
                                     </button>
 
+                                    {/* Детали заказа */}
                                     {expandedOrders[order.id] && (
-                                        <div className="mt-3 p-3 bg-gray-100 rounded-md">
-                                            <h3 className="text-lg font-semibold">Товары в заказе:</h3>
+                                        <div className="mt-3 p-3 mb-4 bg-foreground/5 rounded-xl">
+                                            <h3 className="text-lg sm:text-md font-semibold">Товары в заказе:</h3>
                                             {order.order_items.length > 0 ? (
-                                                <ul className="mt-2 space-y-2">
+                                                <ul className="mt-2 mb-2 space-y-2">
                                                     {order.order_items.map((item) => (
                                                         <li key={item.id} className="flex justify-between p-2 border-b">
                                                             <span>{item.product_name}</span>
-                                                            <span>{item.quantity} x {item.price} руб. = {item.total} руб.</span>
+                                                            <span className='ml-1'>{item.quantity} x {item.price} руб. = {item.total} руб.</span>
                                                         </li>
                                                     ))}
                                                 </ul>
@@ -207,12 +235,24 @@ const RequestsPage = () => {
                                         </div>
                                     )}
 
-                                    <button onClick={() => toggleViewed(order.id, "orders")} className="bg-green-500 text-white px-3 py-1 rounded-md mr-2">
-                                        {order.viewed ? "Снять просмотр" : "Просмотрено"}
-                                    </button>
-                                    <button onClick={() => deleteItem(order.id, "orders")} className="bg-red-500 text-white px-3 py-1 rounded-md">
-                                        Удалить
-                                    </button>
+                                    {/* Кнопки управления заказом */}
+                                    <div className="flex flex-col gap-2 sm:mt-3">
+                                        <button
+                                            onClick={() => toggleViewed(order.id, "orders")}
+                                            className={`px-3 py-2 rounded-md border w-full ${
+                                                order.viewed
+                                                    ? "bg-transparent border-accent"
+                                                    : "bg-accent text-foreground border-transparent"
+                                            }`}
+                                        >
+                                            {order.viewed ? "Снять просмотр" : "Просмотрено"}
+                                        </button>
+
+                                        <button onClick={() => deleteItem(order.id, "orders")}
+                                                className="bg-foreground text-white px-3 py-2 rounded-md w-full">
+                                            Удалить
+                                        </button>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
@@ -220,7 +260,10 @@ const RequestsPage = () => {
                 </div>
             )}
         </div>
-    );
+</AuthWrapper>
+)
+    ;
+
 };
 
 export default RequestsPage;
