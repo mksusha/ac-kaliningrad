@@ -3,7 +3,7 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Image from "next/image";
-import AvitoLogo from "/public/avito.svg"; // Логотип Avito
+import AvitoLogo from "/avito.svg"; // Логотип Avito
 import { CheckCircle, Users, ShieldCheck, Star } from "lucide-react"; // Иконки Lucide
 
 export default function ReviewsPage() {
