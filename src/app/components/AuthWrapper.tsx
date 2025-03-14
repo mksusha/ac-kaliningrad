@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -8,13 +8,25 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string>("");
 
+    useEffect(() => {
+        // Проверка, что мы находимся в браузере
+        if (typeof window !== "undefined") {
+            const storedAuth = localStorage.getItem("auth");
+            if (storedAuth === "true") {
+                setIsAuthenticated(true);
+            }
+        }
+    }, []);
+
     const handleLogin = () => {
         const envLogin = process.env.NEXT_PUBLIC_ADMIN_LOGIN;
         const envPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
         if (login === envLogin && password === envPassword) {
             setIsAuthenticated(true);
-            localStorage.setItem("auth", "true");
+            if (typeof window !== "undefined") {
+                localStorage.setItem("auth", "true");
+            }
             setError("");  // Сбрасываем ошибку при успешном входе
         } else {
             setError("Неверные данные");
