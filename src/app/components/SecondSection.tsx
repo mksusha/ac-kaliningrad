@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 const Home: NextPage = () => {
     return (
-        <main className="bg mb-10 text-[#333333] py-12 flex flex-col">
+        <main className="bg mb-10 mx-5 text-[#333333] py-12 flex flex-col">
             <div className="container mx-auto px-4 md:px-0 flex-grow">
                 {/* Верхний блок: заголовок слева, описание справа */}
                 <div className="grid grid-cols-1 mb-20 md:grid-cols-2 gap-8">

@@ -40,11 +40,11 @@ const Header = () => {
                     <div className="relative flex items-center">
                         {/* Овал с фоном (скрыт на экранах < 375px) */}
                         <div
-                            className="hidden md:block absolute w-[550px] h-[40px] bg-[#C7E07A] opacity-60 rounded-full -z-10 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            className="hidden md:block absolute w-auto md:w-[460px] lg:w-[550px] h-[40px] bg-[#C7E07A] opacity-60 rounded-full -z-10 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
                         </div>
 
                         {/* Навигация для больших экранов */}
-                        <nav className="hidden md:flex space-x-1 z-10">
+                        <nav className="hidden md:flex  space-x-1 z-10">
                             {[
                                 {text: "Каталог", url: "/catalog"},
                                 {text: "Услуги", url: "/services"},
