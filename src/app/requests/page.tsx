@@ -45,12 +45,22 @@ const RequestsPage = () => {
         () => (typeof window !== "undefined" && localStorage.getItem("activeTab") as "requests" | "orders") || "requests"
     );
     const [sortOrder, setSortOrder] = useState<"new" | "old">("new");
-    const [hideViewed, setHideViewed] = useState<boolean>(false);
+    const [hideViewed, setHideViewed] = useState<boolean>(() => {
+        if (typeof window !== "undefined") {
+            return localStorage.getItem("hideViewed") === "true";
+        }
+        return false;
+    });
     const [expandedOrders, setExpandedOrders] = useState<{ [key: number]: boolean }>({});
 
     useEffect(() => {
         fetchData();
     }, []);
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            localStorage.setItem("hideViewed", hideViewed.toString());
+        }
+    }, [hideViewed]);
 
     const fetchData = async () => {
         try {
