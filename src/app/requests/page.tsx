@@ -41,7 +41,9 @@ const RequestsPage = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<"requests" | "orders">("requests");
+    const [activeTab, setActiveTab] = useState<"requests" | "orders">(
+        () => (typeof window !== "undefined" && localStorage.getItem("activeTab") as "requests" | "orders") || "requests"
+    );
     const [sortOrder, setSortOrder] = useState<"new" | "old">("new");
     const [hideViewed, setHideViewed] = useState<boolean>(false);
     const [expandedOrders, setExpandedOrders] = useState<{ [key: number]: boolean }>({});
@@ -71,7 +73,13 @@ const RequestsPage = () => {
             setLoading(false);
         }
     };
-
+    // Функция смены вкладки и сохранения в localStorage
+    const changeTab = (tab: "requests" | "orders") => {
+        setActiveTab(tab);
+        if (typeof window !== "undefined") {
+            localStorage.setItem("activeTab", tab);
+        }
+    };
     const sortByDate = (a: Request | Order, b: Request | Order) => {
         return sortOrder === "new"
             ? new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -79,18 +87,38 @@ const RequestsPage = () => {
     };
 
     const toggleViewed = async (id: number, type: "requests" | "orders") => {
-        if (type === "requests") {
-            setRequests((prev) =>
-                prev.map((req) => (req.id === id ? { ...req, viewed: !req.viewed } : req))
-            );
-            await supabase.from("requests").update({ viewed: !requests.find((r) => r.id === id)?.viewed }).eq("id", id);
-        } else {
-            setOrders((prev) =>
-                prev.map((order) => (order.id === id ? { ...order, viewed: !order.viewed } : order))
-            );
-            await supabase.from("orders").update({ viewed: !orders.find((o) => o.id === id)?.viewed }).eq("id", id);
+        try {
+            if (type === "requests") {
+                const request = requests.find((r) => r.id === id);
+                if (!request) return;
+
+                const newViewed = !request.viewed;
+                setRequests((prev) =>
+                    prev.map((req) => (req.id === id ? { ...req, viewed: newViewed } : req))
+                );
+
+                const { error } = await supabase.from("requests").update({ viewed: newViewed }).eq("id", id);
+                if (error) throw error;
+            } else {
+                const order = orders.find((o) => o.id === id);
+                if (!order) return;
+
+                const newViewed = !order.viewed;
+                setOrders((prev) =>
+                    prev.map((ord) => (ord.id === id ? { ...ord, viewed: newViewed } : ord))
+                );
+
+                const { error } = await supabase.from("orders").update({ viewed: newViewed }).eq("id", id);
+                if (error) throw error;
+            }
+
+            // Загружаем данные снова, чтобы убедиться, что они обновились
+            fetchData();
+        } catch (err) {
+            console.error("Ошибка при обновлении viewed:", err);
         }
     };
+
 
     const deleteItem = async (id: number, type: "requests" | "orders") => {
         await supabase.from(type).delete().eq("id", id);
@@ -121,7 +149,7 @@ const RequestsPage = () => {
                         className={`px-4 py-2 sm:px-3 mr-2 sm:py-1 w-full sm:w-auto rounded-md ${
                             activeTab === "requests" ? "bg-accent text-foreground" : "bg-foreground/20"
                         }`}
-                        onClick={() => setActiveTab("requests")}
+                        onClick={() => changeTab("requests")}
                     >
                         Заявки
                     </button>
@@ -129,7 +157,7 @@ const RequestsPage = () => {
                         className={`px-4 py-2 sm:px-3 sm:py-1 w-full sm:w-auto rounded-md ${
                             activeTab === "orders" ? "bg-accent text-foreground" : "bg-foreground/20"
                         }`}
-                        onClick={() => setActiveTab("orders")}
+                        onClick={() => changeTab("orders")}
                     >
                         Заказы
                     </button>
@@ -154,116 +182,113 @@ const RequestsPage = () => {
                 </div>
 
 
+                {/* Блок заявок */}
+                {activeTab === "requests" && (
+                    <div>
+                        <h2 className="text-2xl sm:text-xl font-semibold mb-4">Заявки</h2>
+                        {requests.filter(r => !hideViewed || !r.viewed).length === 0 ? (
+                            <p>Нет заявок</p>
+                        ) : (
+                            <ul className="space-y-4">
+                                {requests.filter(r => !hideViewed || !r.viewed).sort(sortByDate).map((request) => (
+                                    <li
+                                        key={request.id}
+                                        className={`border p-4 sm:p-3 rounded-md shadow ${
+                                            request.viewed ? "bg-foreground/10" : "bg-white"
+                                        }`}
+                                    >
+                                        <p><strong>Телефон:</strong> {request.phone}</p>
+                                        <p><strong>Email:</strong> {request.email}</p>
+                                        <p><strong>Тип запроса:</strong> {request.request_type}</p>
+                                        <p><strong>Сообщение:</strong> {request.message}</p>
+                                        <p className="text-sm mb-2 text-gray-500">Дата: {new Date(request.created_at).toLocaleString()}</p>
 
+                                        <div className="flex flex-wrap gap-2">
+                                            <button onClick={() => toggleViewed(request.id, "requests")}
+                                                    className="bg-accent text-foreground px-3 py-1 rounded-md">
+                                                {request.viewed ? "Снять просмотр" : "Просмотрено"}
+                                            </button>
+                                            <button onClick={() => deleteItem(request.id, "requests")}
+                                                    className="bg-foreground text-white px-3 py-1 rounded-md">
+                                                Удалить
+                                            </button>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                )}
 
-            {/* Блок заявок */}
-            {activeTab === "requests" && (
-                <div>
-                    <h2 className="text-2xl sm:text-xl font-semibold mb-4">Заявки</h2>
-                    {requests.filter(r => !hideViewed || !r.viewed).length === 0 ? (
-                        <p>Нет заявок</p>
-                    ) : (
-                        <ul className="space-y-4">
-                            {requests.filter(r => !hideViewed || !r.viewed).sort(sortByDate).map((request) => (
-                                <li
-                                    key={request.id}
-                                    className={`border p-4 sm:p-3 rounded-md shadow ${
-                                        request.viewed ? "bg-foreground/10" : "bg-white"
-                                    }`}
-                                >
-                                    <p><strong>Телефон:</strong> {request.phone}</p>
-                                    <p><strong>Email:</strong> {request.email}</p>
-                                    <p><strong>Тип запроса:</strong> {request.request_type}</p>
-                                    <p><strong>Сообщение:</strong> {request.message}</p>
-                                    <p className="text-sm mb-2 text-gray-500">Дата: {new Date(request.created_at).toLocaleString()}</p>
+                {/* Блок заказов */}
+                {activeTab === "orders" && (
+                    <div>
+                        <h2 className="text-2xl sm:text-xl font-semibold mb-4">Заказы</h2>
+                        {orders.filter(o => !hideViewed || !o.viewed).sort(sortByDate).map((order) => (
+                            <li key={order.id} className="border p-4 list-none mb-3 sm:p-3 rounded-md shadow bg-white">
+                                <p>
+                                    <strong>Клиент:</strong> {order.first_name} {order.last_name} ({order.email}, {order.phone ? order.phone : "Телефон не указан"})
+                                </p>
+                                <p><strong>Сумма:</strong> {order.total_cost} руб.</p>
+                                <p><strong>Статус:</strong> {order.status}</p>
+                                <p className="text-sm mb-2 text-gray-500">Дата: {new Date(order.created_at).toLocaleString()}</p>
 
-                                    <div className="flex flex-wrap gap-2">
-                                        <button onClick={() => toggleViewed(request.id, "requests")}
-                                                className="bg-accent text-foreground px-3 py-1 rounded-md">
-                                            {request.viewed ? "Снять просмотр" : "Просмотрено"}
-                                        </button>
-                                        <button onClick={() => deleteItem(request.id, "requests")}
-                                                className="bg-foreground text-white px-3 py-1 rounded-md">
-                                            Удалить
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-            )}
-
-            {/* Блок заказов */}
-            {activeTab === "orders" && (
-                <div>
-                    <h2 className="text-2xl sm:text-xl font-semibold mb-4">Заказы</h2>
-                    {orders.filter(o => !hideViewed || !o.viewed).sort(sortByDate).map((order) => (
-                        <li key={order.id} className="border p-4 list-none mb-3 sm:p-3 rounded-md shadow bg-white">
-                            <p>
-                                <strong>Клиент:</strong> {order.first_name} {order.last_name} ({order.email}, {order.phone ? order.phone : "Телефон не указан"})
-                            </p>
-                            <p><strong>Сумма:</strong> {order.total_cost} руб.</p>
-                            <p><strong>Статус:</strong> {order.status}</p>
-                            <p className="text-sm mb-2 text-gray-500">Дата: {new Date(order.created_at).toLocaleString()}</p>
-
-                            {/* Кнопка раскрытия деталей заказа */}
-                            <button
-                                onClick={() => toggleOrderDetails(order.id)}
-                                className="bg-background mb-2 md:mb-0 border border-foreground text-foreground mr-2 px-3 py-1 rounded-md w-full sm:w-full"
-                            >
-                                {expandedOrders[order.id] ? "Скрыть детали" : "Показать детали"}
-                            </button>
-
-                            {/* Детали заказа */}
-                            {expandedOrders[order.id] && (
-                                <div className="mt-3 p-3 mb-4 bg-foreground/5 rounded-xl">
-                                    <h3 className="text-lg sm:text-md font-semibold">Товары в заказе:</h3>
-                                    {order.order_items.length > 0 ? (
-                                        <ul className="mt-2 mb-2 space-y-2">
-                                            {order.order_items.map((item) => (
-                                                <li key={item.id} className="flex justify-between p-2 border-b">
-                                                    <span>{item.product_name}</span>
-                                                    <span className='ml-1'>{item.quantity} x {item.price} руб. = {item.total} руб.</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    ) : (
-                                        <p className="text-gray-500 mt-2">Нет товаров в заказе.</p>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Кнопки управления заказом */}
-                            <div className="flex flex-col gap-2 sm:mt-3">
+                                {/* Кнопка раскрытия деталей заказа */}
                                 <button
-                                    onClick={() => toggleViewed(order.id, "orders")}
-                                    className={`px-3 py-2 rounded-md border w-full ${
-                                        order.viewed
-                                            ? "bg-transparent border-accent"
-                                            : "bg-accent text-foreground border-transparent"
-                                    }`}
+                                    onClick={() => toggleOrderDetails(order.id)}
+                                    className="bg-background mb-2 md:mb-0 border border-foreground text-foreground mr-2 px-3 py-1 rounded-md w-full sm:w-full"
                                 >
-                                    {order.viewed ? "Снять просмотр" : "Просмотрено"}
+                                    {expandedOrders[order.id] ? "Скрыть детали" : "Показать детали"}
                                 </button>
 
-                                <button onClick={() => deleteItem(order.id, "orders")}
-                                        className="bg-foreground text-white px-3 py-2 rounded-md w-full">
-                                    Удалить
-                                </button>
-                            </div>
-                        </li>
-                    ))}
+                                {/* Детали заказа */}
+                                {expandedOrders[order.id] && (
+                                    <div className="mt-3 p-3 mb-4 bg-foreground/5 rounded-xl">
+                                        <h3 className="text-lg sm:text-md font-semibold">Товары в заказе:</h3>
+                                        {order.order_items.length > 0 ? (
+                                            <ul className="mt-2 mb-2 space-y-2">
+                                                {order.order_items.map((item) => (
+                                                    <li key={item.id} className="flex justify-between p-2 border-b">
+                                                        <span>{item.product_name}</span>
+                                                        <span
+                                                            className='ml-1'>{item.quantity} x {item.price} руб. = {item.total} руб.</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p className="text-gray-500 mt-2">Нет товаров в заказе.</p>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Кнопки управления заказом */}
+                                <div className="flex flex-col gap-2 sm:mt-3">
+                                    <button
+                                        onClick={() => toggleViewed(order.id, "orders")}
+                                        className={`px-3 py-2 rounded-md border w-full ${
+                                            order.viewed
+                                                ? "bg-transparent border-accent"
+                                                : "bg-accent text-foreground border-transparent"
+                                        }`}
+                                    >
+                                        {order.viewed ? "Снять просмотр" : "Просмотрено"}
+                                    </button>
+
+                                    <button onClick={() => deleteItem(order.id, "orders")}
+                                            className="bg-foreground text-white px-3 py-2 rounded-md w-full">
+                                        Удалить
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
 
 
-
-
-                </div>
-            )}
-        </div>
-</AuthWrapper>
-)
-    ;
+                    </div>
+                )}
+            </div>
+        </AuthWrapper>
+    )
+        ;
 
 };
 
