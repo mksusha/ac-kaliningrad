@@ -3,12 +3,27 @@ import { Client } from 'pg';
 
 const getClient = () => new Client({ connectionString: process.env.DATABASE_URL });
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+const getIdFromRequest = (req: NextRequest | Request) => {
+    // Для NextRequest у нас есть nextUrl, для обычного Request нужно преобразовать
+    if ('nextUrl' in req) {
+        const parts = req.nextUrl.pathname.split('/');
+        return parts[parts.length - 1];
+    } else {
+        // Если придет обычный Request — разберём URL
+        const url = new URL(req.url);
+        const parts = url.pathname.split('/');
+        return parts[parts.length - 1];
+    }
+};
+
+export async function GET(req: NextRequest) {
     const client = getClient();
     await client.connect();
 
+    const id = getIdFromRequest(req);
+
     try {
-        const res = await client.query('SELECT * FROM services WHERE id = $1', [params.id]);
+        const res = await client.query('SELECT * FROM services WHERE id = $1', [id]);
 
         if (res.rowCount === 0) {
             return NextResponse.json({ error: 'Услуга не найдена' }, { status: 404 });
@@ -23,9 +38,11 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
     }
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request) {
     const client = getClient();
     await client.connect();
+
+    const id = getIdFromRequest(req);
 
     try {
         const body = await req.json();
@@ -50,7 +67,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
             body.slug,
             body.service_type,
             body.image_url,
-            params.id,
+            id,
         ]);
 
         return NextResponse.json({ success: true });
@@ -62,12 +79,14 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     }
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request) {
     const client = getClient();
     await client.connect();
 
+    const id = getIdFromRequest(req);
+
     try {
-        const res = await client.query('DELETE FROM services WHERE id = $1', [params.id]);
+        const res = await client.query('DELETE FROM services WHERE id = $1', [id]);
 
         if (res.rowCount === 0) {
             return NextResponse.json({ error: 'Услуга не найдена' }, { status: 404 });
