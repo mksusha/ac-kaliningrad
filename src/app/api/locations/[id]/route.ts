@@ -1,9 +1,14 @@
 import { getClient } from '@/lib/db';
 import { NextRequest } from 'next/server';
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+const getIdFromUrl = (req: NextRequest) => {
+    const parts = req.nextUrl.pathname.split('/');
+    return parts[parts.length - 1]; // вернёт [id]
+};
+
+export async function GET(req: NextRequest) {
+    const id = getIdFromUrl(req);
     const client = await getClient();
-    const id = params.id;
 
     try {
         const res = await client.query('SELECT * FROM location WHERE id = $1', [id]);
@@ -19,10 +24,10 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
     }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest) {
+    const id = getIdFromUrl(req);
     const client = await getClient();
-    const id = params.id;
-    const { latitude, longitude, altitude, address } = await request.json();
+    const { latitude, longitude, altitude, address } = await req.json();
 
     try {
         await client.query(
@@ -40,9 +45,9 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     }
 }
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest) {
+    const id = getIdFromUrl(req);
     const client = await getClient();
-    const id = params.id;
 
     try {
         await client.query('DELETE FROM location WHERE id = $1', [id]);
