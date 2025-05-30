@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getClient } from '@/lib/db';
 
-export async function GET(
-    request: Request,
-    { params }: { params: { id: string } }
-) {
-    const { id } = params;
+function getIdFromRequest(request: Request) {
+    const url = new URL(request.url);
+    const parts = url.pathname.split('/');
+    return parts[parts.length - 1]; // последний сегмент — это id
+}
+
+export async function GET(request: Request) {
+    const id = getIdFromRequest(request);
 
     const client = await getClient();
     const result = await client.query(
@@ -21,11 +24,8 @@ export async function GET(
     return NextResponse.json(result.rows[0]);
 }
 
-export async function PATCH(
-    request: Request,
-    { params }: { params: { id: string } }
-) {
-    const { id } = params;
+export async function PATCH(request: Request) {
+    const id = getIdFromRequest(request);
 
     let bodyText: string;
     try {
