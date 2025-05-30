@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 import { getClient } from '@/lib/db';
 
-export async function GET(
-    request: Request,
-    { params }: { params: { slug: string } }
-) {
-    const { slug } = params;
+function getSlugFromRequest(request: Request) {
+    const url = new URL(request.url);
+    const parts = url.pathname.split('/');
+    // Ожидаем, что slug — последний сегмент URL
+    return parts[parts.length - 1];
+}
+
+export async function GET(request: Request) {
+    const slug = getSlugFromRequest(request);
     const client = await getClient();
 
     const result = await client.query(
