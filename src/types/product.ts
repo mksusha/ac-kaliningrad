@@ -4,6 +4,7 @@ export interface AirConditioner {
     brand: string;
     category: string;
     imageUrl: string;
+    images: { url: string }[];
     description: string;
     specs: {
         cooling_power: string;
@@ -12,5 +13,5 @@ export interface AirConditioner {
     slug: string;
     management?: string;
     refrigerant?: string;
-    areaOptions?: number[]; // Теперь у кондиционеров есть возможные площади
+    areaOptions?: number[];
 }

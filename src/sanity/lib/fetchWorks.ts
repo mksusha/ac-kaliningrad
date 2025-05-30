@@ -5,8 +5,8 @@ export interface Work {
     title: string;
     description: string;
     images: string[];
-    slug: { current: string };  // Слаг как объект с полем current
-    address: string;  // Добавлено поле для адреса
+    slug: { current: string };
+    address: string;
 }
 
 
@@ -24,7 +24,7 @@ export async function fetchWorks(): Promise<Work[]> {
             description,
             "images": images[].asset->url,
             slug,
-            address  // Добавляем поле для адреса
+            address  
         } | order(_createdAt asc)`;
 
         return await client.fetch(query);
@@ -35,7 +35,7 @@ export async function fetchWorks(): Promise<Work[]> {
 }
 
 
-// Метод для получения работы по слагу
+
 export async function fetchWorkBySlug(slug: string): Promise<Work | null> {
     try {
         const query = `*[_type == "work" && slug.current == $slug][0]{
@@ -44,7 +44,7 @@ export async function fetchWorkBySlug(slug: string): Promise<Work | null> {
             description,
             "images": images[].asset->url,
             slug,
-            address  // Добавляем поле для адреса
+            address  
         }`;
 
         const params = { slug };

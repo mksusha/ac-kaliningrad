@@ -13,7 +13,7 @@ export default function SearchFilters({ onCategoryChangeAction }: { onCategoryCh
             setCategory(initialCategory);
             onCategoryChangeAction(initialCategory);
         }
-    }, [searchParams, onCategoryChangeAction]); // Обновляем только в `useEffect`
+    }, [searchParams, onCategoryChangeAction]);
 
     return null;
 }

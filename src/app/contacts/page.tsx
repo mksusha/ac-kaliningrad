@@ -14,9 +14,7 @@ const ContactPage = () => {
                 <div className="container max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Свяжитесь с нами</h1>
 
-                    {/* 🔹 Основной блок с контактами */}
                     <div className="bg-background mt-10 mb-12 p-6 md:p-10 rounded-2xl shadow-lg flex flex-wrap md:flex-nowrap justify-between items-start">
-                        {/* Левая часть - контакты */}
                         <div className="w-full md:w-1/2 space-y-6">
                             <div className="flex items-center">
                                 <AiOutlinePhone className="text-[#B4CC6E] text-3xl mr-4" />
@@ -30,7 +28,6 @@ const ContactPage = () => {
                             </div>
                         </div>
 
-                        {/* Правая часть - мессенджеры */}
                         <div className="w-full md:w-1/2 flex flex-col items-center md:items-end space-y-4 mt-6 md:mt-0">
                             <p className="text-lg font-medium text-gray-700 text-center md:text-right">
                                 Вы можете связаться с нами в мессенджерах
@@ -58,9 +55,7 @@ const ContactPage = () => {
                         </div>
                     </div>
 
-                    {/* 🔹 Блок о компании */}
                     <div className="mt-10 flex flex-wrap md:flex-nowrap rounded-3xl shadow-lg overflow-hidden">
-                        {/* Левая часть - заголовок и описание */}
                         <div className="w-full md:w-1/2 bg-accent p-6 md:p-8">
                             <h2 className="text-3xl font-semibold mb-6 flex items-center">
                                 <FaHandsHelping className="text-foreground text-3xl mr-4"/>
@@ -74,7 +69,6 @@ const ContactPage = () => {
                             </p>
                         </div>
 
-                        {/* Правая часть - список преимуществ */}
                         <div className="w-full md:w-1/2 bg-foreground p-6 md:p-8">
                             <ul className="list-disc text-white list-inside space-y-3 text-lg">
                                 <li className="flex items-center">

@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model location {
+  id        String  @id
+  latitude  Float?
+  longitude Float?
+  altitude  Float?
+  address   String?
+}
+
+model product {
+  id               Int     @id @default(autoincrement())
+  sanityId         String? @map("_id")
+  title            String
+  slug             String
+  brand            String?
+  category         String?
+  description      String?
+  images           Json?
+  models           Json?
+  specs            Json?
+  prices           Json?
+  buy_links        Json?
+  documents        Json?
+  area_options     Json?
+  management       String?
+  refrigerant      String?
+  range            String?
+  cooling_capacity String?
+  manufacturer     Json?
+  dealer           Json?
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model services {
+  id           Int     @id @default(autoincrement())
+  title        String  @db.VarChar(255)
+  description  String?
+  price        Decimal @db.Decimal
+  price_label  String? @default("От") @db.VarChar(50)
+  slug         String  @unique @db.VarChar(96)
+  service_type String? @db.VarChar(50)
+  image_url    String?
+  image_alt    String?
+  sanity_id    String? @unique @db.VarChar(255)
+}
+
+model works {
+  id          Int     @id @default(autoincrement())
+  title       String  @db.VarChar(255)
+  slug        String  @unique @db.VarChar(96)
+  description Json?
+  images      Json?
+  address     String?
+  sanity_id   String? @unique
+}

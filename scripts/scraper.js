@@ -24,7 +24,7 @@ const client = createClient({
 const BASE_URL = 'https://daichi.ru/catalog/bytovoe-konditsionirovanie/';
 const PAGES = 6;
 
-// Функция для безопасного перехода по страницам
+
 async function safeGoto(page, url) {
     try {
         await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 });
@@ -34,16 +34,16 @@ async function safeGoto(page, url) {
     }
 }
 
-// Функция для обновления товара в Sanity по совпадению названия
+
 async function updateProductInSanity(product) {
     try {
-        // Ищем товар по заголовку
+
         const query = `*[_type == "product" && title == $title][0]`;
         const existingProduct = await client.fetch(query, { title: product.title });
 
         if (existingProduct) {
-            // Обновляем поля: холодопроизводительность, логотип статистики,
-            // данные производителя и дилера
+
+
             const updateData = {
                 cooling_capacity: product.coolingCapacity,
                 statsLogo: product.statsLogo,
@@ -63,7 +63,7 @@ async function updateProductInSanity(product) {
     }
 }
 
-// Функция для парсинга списка товаров (ссылок, заголовков)
+
 async function scrapePage(pageUrl) {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
@@ -82,18 +82,18 @@ async function scrapePage(pageUrl) {
     return products;
 }
 
-// Функция для парсинга деталей товара (без specs, только нужные блоки)
+
 async function scrapeProductDetails(productUrl) {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await safeGoto(page, productUrl);
 
     const data = await page.evaluate(() => {
-        // Базовые данные
+
         const title = document.querySelector('.page__title.h1.is--small')?.innerText.trim();
         const images = Array.from(document.querySelectorAll('.product-card__image-slide img')).map(img => img.src);
 
-        // Извлекаем значение холодопроизводительности, кВт
+
         let coolingCapacity = "";
         const statItems = Array.from(document.querySelectorAll('.product-card__stat-item'));
         statItems.forEach(item => {
@@ -104,10 +104,10 @@ async function scrapeProductDetails(productUrl) {
             }
         });
 
-        // Логотип статистики
+
         const statsLogo = document.querySelector('.product-card__stats-logo')?.getAttribute('src') || "";
 
-        // Данные производителя (без дилера)
+
         const manufacturerBlock = document.querySelector('.product-card__link-block:not(.product-card__link-block--dealer)');
         let manufacturerLogo = "";
         let manufacturerLink = "";
@@ -121,7 +121,7 @@ async function scrapeProductDetails(productUrl) {
             manufacturerDesc = descEl ? descEl.innerText.trim() : "";
         }
 
-        // Данные дилера
+
         const dealerBlock = document.querySelector('.product-card__link-block.product-card__link-block--dealer');
         let dealerLink = "";
         let dealerDesc = "";
@@ -153,7 +153,7 @@ async function scrapeProductDetails(productUrl) {
     return data;
 }
 
-// Основной процесс: парсинг страниц, деталей товаров и обновление в Sanity
+
 (async () => {
     let allProducts = [];
 
@@ -168,7 +168,7 @@ async function scrapeProductDetails(productUrl) {
         console.log(`📦 Парсим товар: ${product.title}`);
         const details = await scrapeProductDetails(product.link);
         await updateProductInSanity(details);
-        await new Promise((resolve) => setTimeout(resolve, 5000)); // задержка 5 секунд между обновлениями
+        await new Promise((resolve) => setTimeout(resolve, 5000));
     }
 
     console.log('🎉 Обновление товаров завершено!');

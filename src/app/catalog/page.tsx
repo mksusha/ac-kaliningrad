@@ -14,21 +14,23 @@ function CatalogContent() {
     const [airConditioners, setAirConditioners] = useState<AirConditioner[]>([]);
     const [filteredData, setFilteredData] = useState<AirConditioner[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [area, setArea] = useState<number | "">(""); // Добавляем площадь
+    const [area, setArea] = useState<number | "">("");
 
     useEffect(() => {
         async function fetchData() {
-            const data = await getAirConditioners();
+            const res = await fetch('/api/air-conditioners');
+            const data: AirConditioner[] = await res.json();
             setAirConditioners(data);
         }
         fetchData();
     }, []);
 
+
     useEffect(() => {
         if (airConditioners.length) {
             applyFilters(airConditioners);
         }
-    }, [airConditioners, category, brand, search, management, refrigerant, area]); // Добавили area
+    }, [airConditioners, category, brand, search, management, refrigerant, area]);
 
     const applyFilters = (data: AirConditioner[]) => {
         let filtered = data;
@@ -55,8 +57,8 @@ function CatalogContent() {
             filtered = filtered.filter((item) => item.refrigerant === refrigerant);
         }
 
-        // Фильтрация по площади
-        // Improved check for area filtering
+
+
         if (area && typeof area === "number") {
             filtered = filtered.filter((item) =>
                 Array.isArray(item.areaOptions) && item.areaOptions.some((opt) => opt >= area)
@@ -77,13 +79,13 @@ function CatalogContent() {
                     </Suspense>
                     <Filters
                         onFilterChangeAction={(filters) => {
-                            console.log("Фильтры из Filters:", filters); // Add logging to verify the filters
+                            console.log("Фильтры из Filters:", filters);
                             setCategory(filters.category);
                             setBrand(filters.brand);
                             setSearch(filters.search);
                             setManagement(filters.management);
                             setRefrigerant(filters.refrigerant);
-                            setArea(filters.area); // Update area filter
+                            setArea(filters.area);
                         }}
                         onResetPagination={() => setCurrentPage(1)}
                         airConditioners={airConditioners}

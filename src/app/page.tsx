@@ -5,7 +5,7 @@ import Footer from "@/app/components/Footer";
 import SecondSection from "@/app/components/SecondSection";
 import CatalogBlock from "@/app/components/CatalogBlock";
 import ServicesBlock from "@/app/components/ServicesBlock";
-// import ThirdSection from "@/app/components/ThirdSection";
+
 
 export default function Home() {
   return (
@@ -15,7 +15,7 @@ export default function Home() {
           <SecondSection></SecondSection>
           <CatalogBlock ></CatalogBlock>
           <ServicesBlock></ServicesBlock>
-          {/*<ThirdSection></ThirdSection>*/}
+          { }
 <Footer  ></Footer>
       </>
   );

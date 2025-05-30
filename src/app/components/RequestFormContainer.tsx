@@ -10,7 +10,7 @@ const RequestFormContainer = () => {
 
     const toggleFormVisibility = () => {
         setIsFormVisible(!isFormVisible);
-        setFormStatus('initial'); // Сбрасываем статус формы при повторном открытии
+        setFormStatus('initial');
     };
 
     const handleFormSubmit = () => {
@@ -19,7 +19,7 @@ const RequestFormContainer = () => {
 
     const closeForm = () => {
         setIsFormVisible(false);
-        setFormStatus('initial'); // Сбрасываем статус
+        setFormStatus('initial');
     };
 
     return (

@@ -1,12 +1,12 @@
-// scripts/seedServices.js
+
 import 'dotenv/config';
 import { createClient } from 'next-sanity';
 
 const client = createClient({
-    projectId: "2y01oix2", // Ваш действительный projectId
-    dataset: "production", // Обычно используется production
+    projectId: "2y01oix2",
+    dataset: "production",
     token: "skGpyILeZJ7AnXVmDnuB3n2LcMYt3dl0Bhm4fV2BuBYeq98FtqqzmDou8rK9GQXcL816xaK2Q9pp76uD8w1I3rq8lCSeQ1iQ3pmcrqW1YgIRd1ynJfgdqvNyp3ie0djFncEp4uGyVI2uzaz8MK2bgGYjjXEAxU8A8QM3nDNSzfp7kAKyFWfZ",
-    apiVersion: "2025-02-11",   // Дата версии API
+    apiVersion: "2025-02-11",
     useCdn: false,
 });
 

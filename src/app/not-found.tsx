@@ -7,7 +7,6 @@ export default function NotFoundPage() {
     return (
         <main className="flex min-h-screen items-center justify-center px-6 py-24 sm:py-32">
             <div className="w-full max-w-[800px] text-center bg-[#F8F8F3] rounded-3xl p-10 shadow-lg">
-                {/* Анимированное 404 */}
                 <motion.h1
                     className="text-9xl font-extrabold text-[#C7E07A]"
                     initial={{ y: -20, scale: 0.8, opacity: 0 }}
@@ -17,7 +16,6 @@ export default function NotFoundPage() {
                     404
                 </motion.h1>
 
-                {/* Заголовок */}
                 <motion.h2
                     className="mt-4 text-4xl font-bold text-[#333333] sm:text-5xl"
                     initial={{ opacity: 0, y: 20 }}
@@ -27,7 +25,6 @@ export default function NotFoundPage() {
                     Страница не найдена
                 </motion.h2>
 
-                {/* Описание */}
                 <motion.p
                     className="mt-6 text-lg text-[#333333] sm:text-xl"
                     initial={{ opacity: 0, y: 20 }}
@@ -37,7 +34,6 @@ export default function NotFoundPage() {
                     Возможно, она была удалена или адрес указан неверно.
                 </motion.p>
 
-                {/* Кнопки */}
                 <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
                     <Link
                         href="/"

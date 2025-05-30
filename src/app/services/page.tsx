@@ -1,4 +1,3 @@
-import { createClient } from "next-sanity";
 import { notFound } from "next/navigation";
 import { FileText, Wrench, Settings, Droplet } from "lucide-react";
 import Header from "@/app/components/Header";
@@ -6,7 +5,7 @@ import Footer from "@/app/components/Footer";
 import ServiceCard from "@/app/catalog/components/ServiceCard";
 
 export interface Service {
-    _id: string;
+    id: string;
     title: string;
     description?: string;
     price?: number;
@@ -15,28 +14,18 @@ export interface Service {
     serviceType?: string;
     imageUrl?: string;
 }
-
-// Функция для получения услуг из Sanity
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 async function fetchServices(): Promise<Service[]> {
-    const client = createClient({
-        projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "your_project_id",
-        dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
-        apiVersion: "2023-01-01",
-        useCdn: true,
+    const res = await fetch(`${baseUrl}/api/services`, {
+        cache: 'no-store',
     });
 
-    const query = `*[_type == "service"]{
-        _id,
-        title,
-        description,
-        price,
-        priceLabel,
-        "slug": slug.current,
-        serviceType,
-        "imageUrl": image.asset->url
-    } | order(_createdAt asc)`;
 
-    return await client.fetch(query);
+    if (!res.ok) {
+        throw new Error('Ошибка при загрузке услуг');
+    }
+
+    return res.json();
 }
 
 export default async function ServicesPage() {
@@ -76,9 +65,9 @@ export default async function ServicesPage() {
                                 title: "Заправка фреоном",
                                 description: "Профессиональная заправка кондиционеров хладагентом.",
                             },
-                        ].map(({ icon: Icon, title, description }, index) => (
+                        ].map(({ icon: Icon, title, description }) => (
                             <div
-                                key={index}
+                                key={title}  // уникальный ключ по title
                                 className="bg-white/40 py-4 sm:py-5 px-3 sm:px-4 rounded-3xl shadow-md text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-2"
                             >
                                 <Icon className="w-12 sm:w-16 h-12 sm:h-16 mx-auto mb-3 sm:mb-4 text-accent" />
@@ -88,11 +77,12 @@ export default async function ServicesPage() {
                                 <p className="text-white/50 text-sm sm:text-base">{description}</p>
                             </div>
                         ))}
+
                     </div>
                 </section>
                 <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                     {services.map((service) => (
-                        <ServiceCard key={service._id} service={service} />
+                        <ServiceCard key={service.id} service={service} />
                     ))}
                 </div>
             </main>

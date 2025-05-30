@@ -3,7 +3,7 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Image from "next/image";
-import { CheckCircle, Users, ShieldCheck, Star } from "lucide-react"; // Иконки Lucide
+import { CheckCircle, Users, ShieldCheck, Star } from "lucide-react";
 
 export default function ReviewsPage() {
     return (
@@ -11,9 +11,7 @@ export default function ReviewsPage() {
             <Header />
 
             <main className="flex-1">
-                {/* Верхний CTA блок */}
 
-                {/* Блок "Почему выбирают нас?" */}
                 <section className="py-12">
                     <div className="max-w-[1350px] mx-auto px-6">
                         <div className="flex flex-col mb-8 sm:flex-row items-start justify-between gap-6 sm:gap-8 w-full">
@@ -29,7 +27,6 @@ export default function ReviewsPage() {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            {/* Большой блок слева */}
                             <div className="bg-accent p-8 rounded-3xl shadow-md flex flex-col justify-center text-center">
                                 <CheckCircle className="text-foreground w-12 h-12 mb-4 mx-auto"/>
                                 <h3 className="text-2xl font-semibold mb-3">Честные сделки</h3>
@@ -39,7 +36,6 @@ export default function ReviewsPage() {
                                 </p>
                             </div>
 
-                            {/* Два блока справа */}
                             <div className="flex flex-col gap-6">
                                 <div className="bg-foreground p-8 rounded-3xl shadow-md flex flex-col items-center text-center">
                                     <Users className="text-[#C7E07A] w-12 h-12 mb-3"/>
@@ -57,7 +53,6 @@ export default function ReviewsPage() {
                                 </div>
                             </div>
                         </div>
-                        {/* Кнопка с переходом на Avito на всю ширину экрана */}
                         <div className="w-full  mt-10">
                             <a
                                 href="https://www.avito.ru/user/7d963573f9ab4eeaaf03b68604faada8/profile/all"
@@ -67,7 +62,7 @@ export default function ReviewsPage() {
                             >
                                 Перейти на
                                 <Image
-                                    src="/Avito.svg" // Путь к файлу в папке public
+                                    src="/Avito.svg"
                                     alt="Avito"
                                     width={65}
                                     height={65}

@@ -7,11 +7,11 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const [login, setLogin] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string>("");
-    const [isClient, setIsClient] = useState(false); // Для проверки клиентской среды
+    const [isClient, setIsClient] = useState(false);
 
-    // useEffect выполняется только на клиенте
+
     useEffect(() => {
-        setIsClient(true); // Устанавливаем флаг, что мы на клиенте
+        setIsClient(true);
         const storedAuth = localStorage.getItem("auth");
         if (storedAuth === "true") {
             setIsAuthenticated(true);
@@ -27,14 +27,14 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
             if (isClient) {
                 localStorage.setItem("auth", "true");
             }
-            setError(""); // Сбрасываем ошибку при успешном входе
+            setError("");
         } else {
             setError("Неверные данные");
         }
     };
 
     if (!isClient) {
-        return <div>Loading...</div>; // Показываем что-то на сервере, пока не определено состояние клиентского рендера
+        return <div>Loading...</div>;
     }
 
     return isAuthenticated || localStorage.getItem("auth") === "true" ? (
@@ -59,7 +59,7 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
             <button className="px-4 py-2 bg-accent mt-4 text-foreground rounded-xl" onClick={handleLogin}>
                 Войти
             </button>
-            {error && <p className="text-red-500 mt-4">{error}</p>} {/* Текст ошибки снизу */}
+            {error && <p className="text-red-500 mt-4">{error}</p>}
         </div>
     );
 };

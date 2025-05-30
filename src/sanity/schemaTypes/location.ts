@@ -6,25 +6,25 @@ export default {
         {
             name: 'latitude',
             title: 'Широта',
-            type: 'number', // Для хранения значения широты
+            type: 'number',
             description: 'Широта локации (например, 54.727900)',
         },
         {
             name: 'longitude',
             title: 'Долгота',
-            type: 'number', // Для хранения значения долготы
+            type: 'number',
             description: 'Долгота локации (например, 20.534059)',
         },
         {
             name: 'altitude',
             title: 'Высота',
-            type: 'number', // Для хранения значения высоты
+            type: 'number',
             description: 'Высота локации относительно уровня моря (если известна)',
         },
         {
             name: 'address',
             title: 'Адрес',
-            type: 'string', // Адрес в виде строки
+            type: 'string',
             description: 'Укажите адрес локации',
         },
     ],

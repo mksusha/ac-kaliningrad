@@ -31,7 +31,7 @@ export default function Catalog({
     const [category, setCategory] = useState<string | undefined>(undefined);
     const [brand, setBrand] = useState<string | undefined>(undefined);
     const [search, setSearch] = useState<string>("");
-    const [area, setArea] = useState<number | "">(""); // Состояние для фильтра по площади
+    const [area, setArea] = useState<number | "">("");
 
     const itemsPerPage = 9;
     const [filteredAirConditioners, setFilteredAirConditioners] = useState<AirConditioner[]>(airConditioners);
@@ -41,10 +41,10 @@ export default function Catalog({
     }, []);
 
     useEffect(() => {
-        setFilteredAirConditioners(airConditioners); // Обновляем состояние, когда airConditioners меняется
+        setFilteredAirConditioners(airConditioners);
     }, [airConditioners]);
 
-    // Функция для фильтрации
+
     const applyFilters = (
         data: AirConditioner[],
         filters: { category: string; brand: string; search: string; area: number | "" }
@@ -52,29 +52,29 @@ export default function Catalog({
 
         let filtered = data;
 
-        // Фильтрация по категории
+
         if (filters.category && filters.category !== "all") {
             filtered = filtered.filter((item) => {
                 return item.category === filters.category;
             });
         }
 
-        // Фильтрация по бренду
+
         if (filters.brand && filters.brand !== "all") {
             filtered = filtered.filter((item) => {
                 return item.brand === filters.brand;
             });
         }
 
-        // Фильтрация по поисковому запросу
+
         if (filters.search) {
             filtered = filtered.filter((item) => {
                 return item.title.toLowerCase().includes(filters.search.toLowerCase());
             });
         }
 
-        // Фильтрация по площади, только если передано корректное значение
-        // Фильтрация по площади
+
+
         if (filters.area !== "" && typeof filters.area === "number") {
             filtered = filtered.filter((item) => {
                 if (!item.areaOptions) return false;
@@ -92,24 +92,32 @@ export default function Catalog({
         }
 
 
-        // Логируем отфильтрованные данные
+
 
         return filtered;
     };
 
 
-    // Когда меняется любой фильтр, применяем фильтрацию
+
     useEffect(() => {
         applyFilters(airConditioners, { category: category || "all", brand: brand || "all", search, area });
     }, [category, brand, search, area, airConditioners]);
 
+    const getFirstPrice = (item: AirConditioner) => {
+        if (!item.prices || !Array.isArray(item.prices) || item.prices.length === 0) return 0;
+        // Если элемент существует, пытаемся преобразовать в число, иначе 0
+        const price = parseInt(item.prices[0]);
+        return isNaN(price) ? 0 : price;
+    };
+
     const sortedAirConditioners = [...filteredAirConditioners].sort((a, b) => {
         if (sortType === "name-asc") return a.title.localeCompare(b.title);
         if (sortType === "name-desc") return b.title.localeCompare(a.title);
-        if (sortType === "price-asc") return parseInt(a.prices[0]) - parseInt(b.prices[0]);
-        if (sortType === "price-desc") return parseInt(b.prices[0]) - parseInt(a.prices[0]);
+        if (sortType === "price-asc") return getFirstPrice(a) - getFirstPrice(b);
+        if (sortType === "price-desc") return getFirstPrice(b) - getFirstPrice(a);
         return 0;
     });
+
 
     const totalPages = Math.ceil(sortedAirConditioners.length / itemsPerPage);
     const displayedItems = sortedAirConditioners.slice(
@@ -176,16 +184,18 @@ export default function Catalog({
                                 <div className="bg-white border border-foreground/20 rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-foreground/50 hover:bg-gray-50 flex flex-col h-full">
                                     <div className="relative w-full h-52 flex items-center justify-center bg-white">
                                         <img
-                                            src={item.imageUrl}
+                                            src={item.images && item.images.length > 0 ? item.images[0].url : "/placeholder.png"}
                                             alt={item.title}
                                             className="w-auto h-full object-contain"
                                             loading="lazy"
-
                                         />
+
+
                                     </div>
-                                    <div className="p-4 bg-foreground w-full h-full flex flex-col transition-all duration-300 group-hover:bg-foreground/90 flex-grow">
+                                    <div
+                                        className="p-4 bg-foreground w-full h-full flex flex-col transition-all duration-300 group-hover:bg-foreground/90 flex-grow">
                                         <div className="flex-grow">
-                                            {item.category && (
+                                        {item.category && (
                                                 <p className="text-sm text-foreground bg-accent px-1 mb-2 py-1 rounded-lg inline-block">
                                                     {categoryMap[item.category] || "Неизвестная категория"}
                                                 </p>
@@ -197,8 +207,9 @@ export default function Catalog({
                                         </div>
                                         <div>
                                             <p className="text-lg font-bold text-[#C7E07A]">
-                                                {item.prices[0]}
+                                                {item.prices && item.prices.length > 0 ? item.prices[0] : "–"}
                                             </p>
+
                                         </div>
                                     </div>
                                 </div>

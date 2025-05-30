@@ -19,8 +19,8 @@ interface FiltersProps {
         area: number | "";
     }) => void;
     onResetPagination: () => void;
-    airConditioners: any[]; // Массив кондиционеров
-    applyFilters: (data: any[], filters: any) => void; // Функция фильтрации
+    airConditioners: any[];
+    applyFilters: (data: any[], filters: any) => void;
 }
 
 export default function Filters({
@@ -37,7 +37,7 @@ export default function Filters({
     const [search, setSearch] = useState("");
     const [management, setManagement] = useState("all");
     const [refrigerant, setRefrigerant] = useState("all");
-    const [area, setArea] = useState<number | "">(""); // Фильтр по площади
+    const [area, setArea] = useState<number | "">("");
 
     useEffect(() => {
         setIsClient(true);
@@ -47,7 +47,7 @@ export default function Filters({
         if (typeof window !== "undefined") {
             const params = new URLSearchParams(window.location.search);
             setCategory(params.get("category") || "all");
-            setBrand(params.get("brand") || "all"); // Добавляем это
+            setBrand(params.get("brand") || "all");
             setSearch(params.get("search") || "");
             setManagement(params.get("management") || "all");
             setRefrigerant(params.get("refrigerant") || "all");
@@ -67,7 +67,7 @@ export default function Filters({
         newRefrigerant: string,
         newArea: number | ""
     ) => {
-        // Логирование всех значений фильтров
+
         console.log("Изменение фильтров:", {
             category: newCategory,
             brand: newBrand,
@@ -77,10 +77,10 @@ export default function Filters({
             area: newArea,
         });
 
-        // Сброс пагинации
+
         onResetPagination();
 
-        // Создание объекта с обновленными фильтрами
+
         const updatedFilters = {
             category: newCategory,
             brand: newBrand,
@@ -90,7 +90,7 @@ export default function Filters({
             area: newArea,
         };
 
-        // Применение фильтров с помощью функции applyFilters
+
         console.log("Применение фильтров к кондиционерам с фильтрами:", updatedFilters);
         if (typeof applyFilters === "function") {
             applyFilters(airConditioners, updatedFilters);
@@ -98,14 +98,14 @@ export default function Filters({
             console.error("applyFilters is not defined or not a function");
         }
 
-        // Печать параметров перед обновлением URL
+
         const queryParams = new URLSearchParams(window.location.search);
         console.log("Параметры перед обновлением URL:", queryParams);
 
-        // Удаляем все параметры, которые не относятся к фильтрам (например, size)
+
         queryParams.delete("size");
 
-        // Обновляем параметры фильтров
+
         queryParams.set("category", newCategory);
         queryParams.set("brand", newBrand);
         queryParams.set("search", newSearch);
@@ -118,27 +118,27 @@ export default function Filters({
 
         console.log("Итоговые параметры для URL:", queryParams.toString());
 
-        // Переход к новому URL с параметрами
+
         router.push(`/catalog?${queryParams.toString()}`);
 
-        // Вызов callback функции для обработки изменений фильтров
+
         onFilterChangeAction(updatedFilters);
     };
 
 
     const handleResetFilters = () => {
-        // Логирование сброса фильтров
+
         console.log("Сбрасываем фильтры...");
 
-        // Сброс значений состояния
-        setArea(""); // Сбрасываем площадь
-        setSearch(""); // Сбрасываем поиск по названию
-        setBrand("all"); // Сбрасываем бренд
-        setCategory("all"); // Сбрасываем категорию
-        setManagement("all"); // Сбрасываем режим управления
-        setRefrigerant("all"); // Сбрасываем хладагент
 
-        // Сброс фильтров в URL и применение новых значений фильтров
+        setArea("");
+        setSearch("");
+        setBrand("all");
+        setCategory("all");
+        setManagement("all");
+        setRefrigerant("all");
+
+
         console.log("Обновляем фильтры с новыми значениями:");
         handleFilterChange("all", "all", "", "all", "all", "");
     };
@@ -150,7 +150,7 @@ export default function Filters({
         <div
             className="mt-28 bg-accent border-2 border-accent max-w-[1350px] p-6 rounded-3xl flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
 
-            {/* Фильтр по категории */}
+
             <div className="flex flex-col w-full md:w-1/6">
                 <label className="mb-1 text-lg font-semibold text-foreground">Категория</label>
                 <Select
@@ -173,14 +173,14 @@ export default function Filters({
                 </Select>
             </div>
 
-            {/* Фильтр по бренду */}
+
             <div className="flex flex-col w-full md:w-1/6">
                 <label className="mb-1 text-lg font-semibold text-foreground">Фильтр по бренду</label>
                 <Select
                     value={brand}
                     onValueChange={(value) => {
                         console.log("Выбран новый бренд:", value);
-                        setBrand(value); // Добавляем обновление состояния
+                        setBrand(value);
                         handleFilterChange(category, value, search, management, refrigerant, area);
                     }}
                 >
@@ -203,7 +203,7 @@ export default function Filters({
                 </Select>
             </div>
 
-            {/* Фильтр по режиму управления */}
+
             <div className="flex flex-col w-full md:w-1/6">
                 <label className="mb-1 text-lg font-semibold text-foreground">Режим управления</label>
                 <Select
@@ -226,7 +226,7 @@ export default function Filters({
                 </Select>
             </div>
 
-            {/* Фильтр по типу хладагента */}
+
             <div className="flex flex-col w-full md:w-1/6">
                 <label className="mb-1 text-lg font-semibold text-foreground">Тип хладагента</label>
                 <Select
@@ -249,7 +249,6 @@ export default function Filters({
                 </Select>
             </div>
 
-            {/* Фильтр по площади */}
             <div className="flex flex-col w-full md:w-1/6">
                 <label className="mb-1 text-lg font-semibold text-foreground">Площадь (м²)</label>
                 <input
@@ -265,7 +264,7 @@ export default function Filters({
                 />
             </div>
 
-            {/* Фильтр по поиску */}
+
             <div className="flex flex-col flex-grow w-full md:w-1/6">
                 <label className="mb-1 text-lg font-semibold text-foreground">Поиск</label>
                 <input
@@ -275,13 +274,12 @@ export default function Filters({
                     value={search}
                     onChange={(e) => {
                         const newSearch = e.target.value;
-                        setSearch(newSearch); // Сначала обновляем состояние
-                        handleFilterChange(category, brand, newSearch, management, refrigerant, area); // Затем вызываем фильтрацию
+                        setSearch(newSearch);
+                        handleFilterChange(category, brand, newSearch, management, refrigerant, area);
                     }}
                 />
             </div>
 
-            {/* Кнопка очистки фильтров */}
             <button
                 className="sm:h-20 w-full md:w-48 px-4 bg-foreground/50 text-white text-lg rounded-3xl"
                 onClick={handleResetFilters}

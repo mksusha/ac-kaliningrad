@@ -16,8 +16,8 @@ export default defineType({
             title: "Слаг",
             type: "slug",
             options: {
-                source: "title", // Слаг будет генерироваться на основе поля title
-                maxLength: 96, // Максимальная длина слага
+                source: "title",
+                maxLength: 96,
             },
             validation: (Rule) => Rule.required(),
         }),
@@ -27,7 +27,7 @@ export default defineType({
             type: "array",
             of: [
                 {
-                    type: "block", // Используем тип блоков для поддержки форматирования
+                    type: "block",
                     styles: [
                         { title: "Normal", value: "normal" },
                         { title: "H1", value: "h1" },
@@ -73,12 +73,12 @@ export default defineType({
                 layout: "grid",
             },
         }),
-        // Новое поле для адреса
+
         defineField({
             name: "address",
             title: "Адрес",
-            type: "string", // Тип поля для хранения строки
-            description: "Введите адрес, связанный с этой работой", // Описание для подсказки
+            type: "string",
+            description: "Введите адрес, связанный с этой работой",
         }),
     ],
 });

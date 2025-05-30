@@ -5,7 +5,7 @@ export const product = defineType({
     title: 'Кондиционер',
     type: 'document',
     fields: [
-        // Основные поля
+
         defineField({
             name: 'title',
             title: 'Название',
@@ -73,7 +73,7 @@ export const product = defineType({
             of: [{ type: 'string' }],
         }),
 
-        // Характеристики — все поля в виде массивов строк
+
         defineField({
             name: 'specs',
             title: 'Характеристики',
@@ -291,19 +291,19 @@ export const product = defineType({
             type: 'string',
             description: 'Диапазон работы (если применимо)',
         }),
-        // Новые поля:
+
         defineField({
             name: 'cooling_capacity',
             title: 'Холодопроизводительность, кВт',
             type: 'string',
             description: 'Значения холодопроизводительности, например: "2.05; 2.64; 3.52; 5.28; 7.03"',
         }),
-        // defineField({
-        //     name: 'statsLogo',
-        //     title: 'Логотип статистики',
-        //     type: 'image',
-        //     options: { hotspot: true },
-        // }),
+
+
+
+
+
+
         defineField({
             name: 'manufacturer',
             title: 'Производитель',
@@ -347,7 +347,7 @@ export const product = defineType({
     ],
 });
 
-// Пример интерфейса для TypeScript (при необходимости)
+
 export interface AirConditioner {
     _id: string;
     title: string;
@@ -358,7 +358,7 @@ export interface AirConditioner {
     brand: string;
     category: string;
     description: string;
-    // Если вы генерируете URL для изображений, можно хранить их как строки
+
     images: string[];
     models: string[];
     specs: {
@@ -396,11 +396,11 @@ export interface AirConditioner {
     management: string;
     refrigerant: string;
     range: string;
-    // Новые поля:
-    cooling_capacity: string; // Холодопроизводительность, кВт (строка, например: "2.05; 2.64; 3.52; 5.28; 7.03")
-    statsLogo: string;        // URL логотипа статистики
+
+    cooling_capacity: string;
+    statsLogo: string;
     manufacturer: {
-        logo: string;  // URL логотипа производителя
+        logo: string;
         link: string;
         desc: string;
     };

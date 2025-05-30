@@ -1,7 +1,7 @@
 'use client'
 import { createContext, useContext, useState, ReactNode } from "react";
 
-// Определяем типы для контекста
+
 interface FiltersContextType {
     category: string;
     setCategory: (category: string) => void;
@@ -13,14 +13,14 @@ interface FiltersContextType {
     setManagement: (management: string) => void;
     refrigerant: string;
     setRefrigerant: (refrigerant: string) => void;
-    area: number | "";  // Добавляем фильтр по площади
+    area: number | "";
     setArea: (area: number | "") => void;
 }
 
-// Создаём контекст
+
 const FiltersContext = createContext<FiltersContextType | undefined>(undefined);
 
-// Хук для использования контекста
+
 export const useFilters = () => {
     const context = useContext(FiltersContext);
     if (!context) {
@@ -29,14 +29,14 @@ export const useFilters = () => {
     return context;
 };
 
-// Провайдер
+
 export const FiltersProvider = ({ children }: { children: ReactNode }) => {
     const [category, setCategory] = useState("all");
     const [brand, setBrand] = useState("all");
     const [search, setSearch] = useState("");
     const [management, setManagement] = useState("all");
     const [refrigerant, setRefrigerant] = useState("all");
-    const [area, setArea] = useState<number | "">(""); // Состояние для площади
+    const [area, setArea] = useState<number | "">("");
 
     return (
         <FiltersContext.Provider
@@ -51,7 +51,7 @@ export const FiltersProvider = ({ children }: { children: ReactNode }) => {
                 setManagement,
                 refrigerant,
                 setRefrigerant,
-                area,  // Добавили в контекст
+                area,
                 setArea,
             }}
         >

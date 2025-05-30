@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useCart } from "@/hooks/useCart";
 
 export interface Service {
-    _id: string;
+    id: string;
     title: string;
     description?: string;
     price?: number;
@@ -16,18 +16,18 @@ export interface Service {
 
 interface ServiceCardProps {
     service: Service;
-    className?: string;  // Добавьте className, чтобы он был допустимым
+    className?: string;
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
-    const { addToCart, cart } = useCart(); // Используем cart
-    const [quantityInCart, setQuantityInCart] = useState(0); // Состояние для отслеживания количества товара в корзине
+    const { addToCart, cart } = useCart();
+    const [quantityInCart, setQuantityInCart] = useState(0);
 
-    // Проверяем, есть ли товар в корзине
+
     useEffect(() => {
-        const itemInCart = cart?.find((item: any) => item.id === service._id); // Ищем товар в корзине
+        const itemInCart = cart?.find((item: any) => item.id === service.id);
         setQuantityInCart(itemInCart ? itemInCart.quantity : 0);
-    }, [cart, service._id]);
+    }, [cart, service.id]);
 
     const handleAddToCart = () => {
         if (!service.price || !service.slug) {
@@ -35,7 +35,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
             return;
         }
         const cartItem = {
-            id: service._id,
+            id: service.id,
             name: service.title,
             price: service.price,
             quantity: 1,
@@ -51,14 +51,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
         <div
             className="relative flex flex-col border border-gray-200 rounded-2xl overflow-hidden shadow-md bg-white group hover:shadow-lg transition-all duration-300 ease-in-out">
 
-            {/* Блок с изображением */}
+
             <img
                 src={service.imageUrl || "/default.jpg"}
                 alt={service.title}
                 className="w-full h-52 object-cover transition-all duration-300 ease-in-out group-hover:brightness-90"
             />
 
-            {/* Контент карточки */}
+
             <div className="p-6 flex flex-col flex-grow">
                 <h2 className="text-xl font-semibold bg-accent px-2 py-1 rounded-md text-gray-900">
                     {service.title}
@@ -74,15 +74,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
                 )}
             </div>
 
-            {/* Кнопка добавления в корзину с количеством */}
             <div className="p-6 pt-0">
                 <button
                     onClick={handleAddToCart}
-                    disabled={quantityInCart > 0} // Блокируем кнопку, если товар уже в корзине
+                    disabled={quantityInCart > 0}
                     className={`w-full px-4 py-3 text-sm font-medium rounded-xl relative transition-all duration-300 ${
                         quantityInCart > 0
-                            ? "bg-foreground/80 text-white"  // Полупрозрачный фон и текст
-                            : "bg-foreground text-white hover:bg-accentHover transition-colors duration-300" // Плавное изменение фона при ховере
+                            ? "bg-foreground/80 text-white"  
+                            : "bg-foreground text-white hover:bg-accentHover transition-colors duration-300" 
                     }`}
                 >
                     {quantityInCart > 0 ? (

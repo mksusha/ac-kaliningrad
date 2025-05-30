@@ -9,12 +9,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "#F8F8F3", // Светлый фон
-        foreground: "#333333", // Темный текст
-        accent: "#C7E07A",     // Зеленый акцент
+        background: "#F8F8F3",
+        foreground: "#333333",
+        accent: "#C7E07A",
 
-        accentHover: "#B4CC6E", // Чуть более тёмный зелёный для hover
-        accentHover2: "#879a4f", // Чуть более тёмный зелёный для hover
+        accentHover: "#B4CC6E",
+        accentHover2: "#879a4f",
 
 
       },

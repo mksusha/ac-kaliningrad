@@ -54,7 +54,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
 
     return (
         <div className="flex flex-col w-full max-w-full mx-auto p-2">
-            {/* Большое изображение */}
+
             <div className="relative w-full h-64 sm:h-80 md:h-96 rounded-lg">
                 <Image
                     src={images[selectedIndex]}
@@ -64,9 +64,9 @@ export function ProductGallery({ images }: ProductGalleryProps) {
                 />
             </div>
 
-            {/* Блок миниатюр со стрелками */}
+
             <div className="mt-4 flex items-center justify-between">
-                {/* Стрелка назад */}
+
                 <button
                     onClick={handlePrev}
                     disabled={selectedIndex === 0}
@@ -75,7 +75,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
                     <ChevronLeft className="w-5 h-5" />
                 </button>
 
-                {/* Контейнер миниатюр */}
+
                 <div className="flex flex-1 mx-2 space-x-2">
                     {visibleThumbnails.map((imgUrl, i) => {
                         const actualIndex = thumbnailStart + i;
@@ -99,7 +99,7 @@ export function ProductGallery({ images }: ProductGalleryProps) {
                     })}
                 </div>
 
-                {/* Стрелка вперёд */}
+
                 <button
                     onClick={handleNext}
                     disabled={selectedIndex === images.length - 1}

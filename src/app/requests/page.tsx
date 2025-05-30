@@ -83,7 +83,7 @@ const RequestsPage = () => {
             setLoading(false);
         }
     };
-    // Функция смены вкладки и сохранения в localStorage
+
     const changeTab = (tab: "requests" | "orders") => {
         setActiveTab(tab);
         if (typeof window !== "undefined") {
@@ -122,7 +122,7 @@ const RequestsPage = () => {
                 if (error) throw error;
             }
 
-            // Загружаем данные снова, чтобы убедиться, что они обновились
+
             fetchData();
         } catch (err) {
             console.error("Ошибка при обновлении viewed:", err);
@@ -143,7 +143,7 @@ const RequestsPage = () => {
         setExpandedOrders((prev) => ({ ...prev, [id]: !prev[id] }));
     };
     useEffect(() => {
-        console.log(orders);  // Добавьте логирование, чтобы проверить структуру данных
+        console.log(orders);
     }, [orders]);
 
     return (
@@ -153,7 +153,6 @@ const RequestsPage = () => {
 
                 {error && <p className="text-red-500">{error}</p>}
 
-                {/* Кнопки переключения вкладок */}
                 <div className="flex sm:space-x-4 mb-6 sm:flex-row sm:justify-start sm:w-full sm:gap-4 sm:mb-6">
                     <button
                         className={`px-4 py-2 sm:px-3 mr-2 sm:py-1 w-full sm:w-auto rounded-md ${
@@ -172,7 +171,6 @@ const RequestsPage = () => {
                         Заказы
                     </button>
                 </div>
-                {/* Фильтры */}
                 <div className="flex flex-col space-y-4 w-full md:w-auto lg:w-auto md:flex-row justify-start mb-4">
                     <button
                         className="px-4 py-2 sm:px-3 sm:py-1 w-full sm:w-auto bg-foreground/20 rounded-md"
@@ -192,7 +190,6 @@ const RequestsPage = () => {
                 </div>
 
 
-                {/* Блок заявок */}
                 {activeTab === "requests" && (
                     <div>
                         <h2 className="text-2xl sm:text-xl font-semibold mb-4">Заявки</h2>
@@ -230,7 +227,6 @@ const RequestsPage = () => {
                     </div>
                 )}
 
-                {/* Блок заказов */}
                 {activeTab === "orders" && (
                     <div>
                         <h2 className="text-2xl sm:text-xl font-semibold mb-4">Заказы</h2>
@@ -243,7 +239,6 @@ const RequestsPage = () => {
                                 <p><strong>Статус:</strong> {order.status}</p>
                                 <p className="text-sm mb-2 text-gray-500">Дата: {new Date(order.created_at).toLocaleString()}</p>
 
-                                {/* Кнопка раскрытия деталей заказа */}
                                 <button
                                     onClick={() => toggleOrderDetails(order.id)}
                                     className="bg-background mb-2 md:mb-0 border border-foreground text-foreground mr-2 px-3 py-1 rounded-md w-full sm:w-full"
@@ -251,7 +246,6 @@ const RequestsPage = () => {
                                     {expandedOrders[order.id] ? "Скрыть детали" : "Показать детали"}
                                 </button>
 
-                                {/* Детали заказа */}
                                 {expandedOrders[order.id] && (
                                     <div className="mt-3 p-3 mb-4 bg-foreground/5 rounded-xl">
                                         <h3 className="text-lg sm:text-md font-semibold">Товары в заказе:</h3>
@@ -271,7 +265,6 @@ const RequestsPage = () => {
                                     </div>
                                 )}
 
-                                {/* Кнопки управления заказом */}
                                 <div className="flex flex-col gap-2 sm:mt-3">
                                     <button
                                         onClick={() => toggleViewed(order.id, "orders")}

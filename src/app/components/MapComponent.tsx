@@ -1,6 +1,6 @@
 'use client';
-import { useEffect, useRef, useState } from "react";
-import { createClient } from "next-sanity";
+
+import { useEffect, useRef, useState } from 'react';
 
 declare global {
     interface Window {
@@ -9,51 +9,56 @@ declare global {
     }
 }
 
-const client = createClient({
-    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "your_project_id", // Ваш проект ID
-    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production", // Ваш dataset
-    apiVersion: "2023-01-01", // Актуальная версия API
-    useCdn: true, // Используем CDN для ускорения работы
-});
+type Location = {
+    latitude: number;
+    longitude: number;
+    altitude: number | null;
+    address: string;
+};
 
 const MapComponent = () => {
     const mapRef = useRef<HTMLDivElement>(null);
-    const [locations, setLocations] = useState<any[]>([]); // Состояние для локаций
+    const [locations, setLocations] = useState<Location[]>([]);
 
     useEffect(() => {
-        // Загружаем локации из Sanity
         const fetchLocations = async () => {
-            const data = await client.fetch(`*[_type == "location"]{latitude, longitude, altitude, address}`);
-            console.log(data); // Проверим, что данные приходят
-            setLocations(data);
+            try {
+                const res = await fetch('/api/locations', { cache: 'no-store' });
+                const data: Location[] = await res.json();
+                console.log('Локации из PostgreSQL:', data);
+                setLocations(data);
+            } catch (err) {
+                console.error('Ошибка при загрузке локаций из PostgreSQL:', err);
+            }
         };
 
         fetchLocations();
     }, []);
 
     useEffect(() => {
-        if (locations.length === 0) return; // Прерываем выполнение, если локации пустые
+        if (locations.length === 0) return;
 
         const loadMap = () => {
             if (window.ymaps && mapRef.current) {
                 window.ymaps.ready(() => {
-                    // Вычисляем центр карты (среднее значение координат)
-                    const centerLat = locations.reduce((sum, location) => sum + location.latitude, 0) / locations.length;
-                    const centerLng = locations.reduce((sum, location) => sum + location.longitude, 0) / locations.length;
+                    const centerLat = locations.reduce((sum, loc) => sum + loc.latitude, 0) / locations.length;
+                    const centerLng = locations.reduce((sum, loc) => sum + loc.longitude, 0) / locations.length;
 
                     const map = new window.ymaps.Map(mapRef.current, {
-                        center: [centerLat, centerLng], // Центр карты по средним координатам
-                        zoom: 12, // Масштаб
+                        center: [centerLat, centerLng],
+                        zoom: 12,
                     });
 
-                    // Добавляем метки на карту
                     locations.forEach(({ latitude, longitude, address }) => {
-                        console.log(`Добавление метки: ${latitude}, ${longitude}, ${address}`);
-                        const placemark = new window.ymaps.Placemark([latitude, longitude], {
-                            balloonContent: `Адрес: ${address}`,
-                        }, {
-                            iconColor: '#C7E07A', // Цвет метки
-                        });
+                        const placemark = new window.ymaps.Placemark(
+                            [latitude, longitude],
+                            {
+                                balloonContent: `Адрес: ${address}`,
+                            },
+                            {
+                                iconColor: '#C7E07A',
+                            }
+                        );
                         map.geoObjects.add(placemark);
                     });
                 });
@@ -62,7 +67,7 @@ const MapComponent = () => {
 
         if (!window.ymapsLoaded) {
             window.ymapsLoaded = true;
-            const script = document.createElement("script");
+            const script = document.createElement('script');
             const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_API;
             script.src = `https://api-maps.yandex.ru/2.1/?apikey=${apiKey}&lang=ru_RU`;
             script.async = true;
@@ -71,17 +76,17 @@ const MapComponent = () => {
         } else {
             loadMap();
         }
-    }, [locations]); // Зависимость от locations
+    }, [locations]);
 
     return (
-        <div style={{ width: "100%", maxWidth: "1350px", margin: "0 auto" }}>
+        <div style={{ width: '100%', maxWidth: '1350px', margin: '0 auto' }}>
             <div
                 ref={mapRef}
                 style={{
-                    width: "100%",
-                    height: "400px",
-                    borderRadius: "20px",
-                    overflow: "hidden",
+                    width: '100%',
+                    height: '400px',
+                    borderRadius: '20px',
+                    overflow: 'hidden',
                 }}
             />
         </div>

@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Переменные для светлой и тёмной темы */
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -14,13 +14,9 @@
     --foreground: #ededed;
   }
 }
-/* Акцентные цвета */
+
 :root {
-  --accent: #C7E07A; /* Зеленый */
-  --accentHover: #B4CC6E; /* Темно-зеленый */
-  --background: #ffffff; /* Белый */
-  --foreground: #171717; /* Темно-серый */
-}
+  --accent: #C7E07A;   --accentHover: #B4CC6E;   --background: #ffffff;   --foreground: #171717; }
 
 @font-face {
   font-family: 'Nunito';
@@ -43,20 +39,16 @@
   font-style: normal;
 }
 
-/* Указываем Nunito как основной шрифт */
 body {
   font-family: 'Nunito', Arial, Helvetica, sans-serif;
   color: var(--foreground);
 
 }
 
-/* Настройки для заголовков */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Nunito', sans-serif;
-  font-weight: 700; /* Жирность для заголовков */
-}
+  font-weight: 700; }
 
-/* Для текста */
 p, span, a, li {
   font-family: 'Nunito', sans-serif;
 }

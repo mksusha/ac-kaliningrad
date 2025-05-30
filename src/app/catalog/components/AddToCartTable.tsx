@@ -12,24 +12,32 @@ import { useCart } from "@/hooks/useCart";
 import slugify from "slugify";
 
 interface Props {
-    product: any; // Для примера типизация упрощена
+    product: any;
     specFields: { label: string; key: string }[];
 }
 
 export default function AddToCartTable({ product, specFields }: Props) {
     const { cart, addToCart } = useCart();
 
-    // Функция для добавления конкретной модели в корзину
+
     const handleAddToCart = (modelIndex: number) => {
         const itemId = `${product._id ?? product.title}_${modelIndex}`;
         const modelName = product.models?.[modelIndex] || "";
         const priceRaw = product.prices?.[modelIndex] ?? "0";
         const parsedPrice = Number(String(priceRaw).replace(/[^\d.-]/g, ""));
 
-        const image =
-            product.images && product.images.length > 0
-                ? product.images[0]
-                : "/images/placeholder.png";
+        // ✅ Извлекаем URL изображения
+        let image = "/images/placeholder.png";
+        try {
+            if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+                const firstImage = typeof product.images[0] === "string"
+                    ? JSON.parse(product.images[0])
+                    : product.images[0];
+                image = firstImage.url || "/images/placeholder.png";
+            }
+        } catch (e) {
+            console.error("Ошибка при извлечении изображения:", e);
+        }
 
         const slugValue = product.slug?.current
             ? product.slug.current.toLowerCase()
@@ -41,10 +49,11 @@ export default function AddToCartTable({ product, specFields }: Props) {
             slug: slugValue,
             price: parsedPrice,
             quantity: 1,
-            image,
+            image: product.images?.[0]?.url || "", // <-- сохраняем только строку!
             type: "product",
         });
     };
+
 
     return (
         <Table className="border border-[#C7E07A] rounded-md overflow-hidden">

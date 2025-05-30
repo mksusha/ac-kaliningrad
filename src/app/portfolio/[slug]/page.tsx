@@ -1,49 +1,64 @@
-"use client"; // 💡 Делаем этот компонент клиентским
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { fetchWorkBySlug } from "@/sanity/lib/fetchWorks";
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
-import { PortableText, PortableTextComponents } from "@portabletext/react";
-import { type PortableTextBlock } from "sanity";
-import Link from "next/link"; // Для добавления ссылок в хлебные крошки
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink } from "@/components/ui/breadcrumb"; // Импортируем компоненты хлебных крошек
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import Header from '@/app/components/Header';
+import Footer from '@/app/components/Footer';
+import Link from 'next/link';
+import {
+    Breadcrumb,
+    BreadcrumbList,
+    BreadcrumbItem,
+    BreadcrumbLink,
+} from '@/components/ui/breadcrumb';
+import { PortableText, PortableTextComponents } from '@portabletext/react';
 
 const components: PortableTextComponents = {
     block: {
-        normal: ({ children }) => <p className="text-gray-600 mb-4">{children}</p>,
-        h2: ({ children }) => <h2 className="text-xl font-bold">{children}</h2>,
-    },
-    marks: {
-        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+        normal: ({ children }) => <p className="text-gray-700 mb-4">{children}</p>,
     },
     list: {
-        bullet: ({ children }) => <ul className="list-disc ml-5">{children}</ul>,
+        bullet: ({ children }) => <ul className="list-disc ml-6">{children}</ul>,
     },
     listItem: {
-        bullet: ({ children }) => <li className="mb-1">{children}</li>,
+        bullet: ({ children }) => <li>{children}</li>,
     },
 };
 
 export default function WorkDetails() {
-    const { slug } = useParams(); // ✅ Теперь params обрабатывается правильно
+    const { slug } = useParams();
     const [work, setWork] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!slug) return;
-        fetchWorkBySlug(slug as string)
+
+        fetch(`/api/works/slug/${slug}`)
+            .then((res) => {
+                if (!res.ok) throw new Error('Работа не найдена');
+                return res.json();
+            })
             .then((data) => {
+                // Преобразуем images из строки в массив
+                if (typeof data.images === 'string') {
+                    data.images = data.images
+                        .replace(/[{}"]/g, '')
+                        .split(',')
+                        .map((url: string) => url.trim())
+                        .filter(Boolean);
+                }
+
                 setWork(data);
                 setLoading(false);
             })
             .catch((error) => {
-                console.error("Ошибка загрузки:", error);
+                console.error('Ошибка загрузки:', error);
+                setWork(null);
                 setLoading(false);
             });
     }, [slug]);
 
-    if (loading) return null; // ✅ Не отображаем ничего при загрузке
+    if (loading) return <div className="p-10 text-center text-gray-500">Загрузка...</div>;
     if (!work) return <p className="text-center text-gray-500">Работа не найдена</p>;
 
     return (
@@ -51,15 +66,15 @@ export default function WorkDetails() {
             <Header />
 
             <main className="flex-grow container mt-14 md:mt-24 mx-auto px-6 pt-6 pb-0">
-                {/* Хлебные крошки */}
                 <Breadcrumb className="mb-3">
                     <BreadcrumbList>
                         <BreadcrumbItem>
                             <BreadcrumbLink asChild>
-                                <Link href="/portfolio" className="text-gray-500 hover:text-[#C7E07A]">Портфолио</Link>
+                                <Link href="/portfolio" className="text-gray-500 hover:text-[#C7E07A]">
+                                    Портфолио
+                                </Link>
                             </BreadcrumbLink>
                         </BreadcrumbItem>
-                        {/* Разделитель */}
                         <BreadcrumbItem>
                             <span className="text-gray-600">/</span>
                         </BreadcrumbItem>
@@ -71,7 +86,6 @@ export default function WorkDetails() {
 
                 <h1 className="text-4xl font-semibold text-left mb-8">{work.title}</h1>
 
-                {/* Галерея изображений */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Array.isArray(work.images) && work.images.length > 0 ? (
                         work.images.map((image: string, index: number) => (
@@ -88,13 +102,13 @@ export default function WorkDetails() {
                     )}
                 </div>
 
-                {/* Описание работы */}
-                <div className="text-gray-700 text-lg text-left mt-10">
-                    <PortableText
-                        value={(Array.isArray(work.description) ? work.description : []) as PortableTextBlock[]}
-                        components={components}
-                    />
-                </div>
+                {Array.isArray(work.description) ? (
+                    <div className="text-gray-700 text-lg text-left mt-10">
+                        <PortableText value={work.description} components={components} />
+                    </div>
+                ) : (
+                    <p className="text-gray-500 mt-10">Нет описания</p>
+                )}
             </main>
 
             <Footer />

@@ -58,13 +58,13 @@ export default defineType({
                 ],
             },
         }),
-        // ✅ Добавлено поле изображения
+
         defineField({
             name: 'image',
             title: 'Изображение услуги',
             type: 'image',
             options: {
-                hotspot: true, // Позволяет выбирать фокусную точку на изображении
+                hotspot: true,
             },
             fields: [
                 defineField({
@@ -80,14 +80,14 @@ export default defineType({
         select: {
             title: 'title',
             price: 'price',
-            media: 'image', // Добавляем изображение в предпросмотр
+            media: 'image',
         },
         prepare(selection: { title?: string; price?: number; media?: any }) {
             const { title, price, media } = selection;
             return {
                 title: title ?? '',
                 subtitle: price ? `Цена: От ${price}₽` : 'Цена не указана',
-                media, // Теперь в Sanity Studio будет показано изображение
+                media,
             };
         },
     },

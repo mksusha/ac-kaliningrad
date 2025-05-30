@@ -5,7 +5,6 @@ const Home: NextPage = () => {
     return (
         <main className="bg mb-10 mx-5 text-[#333333] py-12 flex flex-col">
             <div className="container mx-auto px-4 md:px-0 flex-grow">
-                {/* Верхний блок: заголовок слева, описание справа */}
                 <div className="grid grid-cols-1 mb-20 md:grid-cols-2 gap-8">
                     <div>
                         <h1 className="text-3xl md:text-4xl font-bold uppercase leading-snug tracking-[0.05em]">
@@ -23,9 +22,7 @@ const Home: NextPage = () => {
                     </div>
                 </div>
 
-                {/* Нижний блок: две карточки */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-                    {/* Левая карточка */}
                     <div className="relative border border-[#333333] rounded-3xl p-6 flex flex-col bg-white flex-auto min-h-[300px] md:min-h-[350px] lg:min-h-[450px]">
                         <div className="absolute top-4 right-4 w-6 h-6 bg-black text-white flex items-center justify-center rounded-full font-bold text-base">+</div>
                         <h2 className="text-xl w-3/5 md:text-3xl font-bold uppercase mb-6">
@@ -44,7 +41,6 @@ const Home: NextPage = () => {
                         </Link>
                     </div>
 
-                    {/* Правая карточка с затемненным фоновым изображением */}
                     <div className="relative border border-[#333333] rounded-3xl p-6 flex flex-col bg-black bg-opacity-85 text-[#C7E07A] pt-4 bg-cover bg-center flex-auto min-h-[300px] md:min-h-[350px] lg:min-h-[200px]" style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/111.jpg')" }}>
                         <div className="absolute top-4 right-4 w-6 h-6 bg-[#C7E07A] text-black flex items-center justify-center rounded-full font-bold text-base">+</div>
                         <h2 className="text-xl w-3/5 md:text-3xl font-bold uppercase mb-6">

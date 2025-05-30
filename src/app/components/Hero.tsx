@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import RequestFormContainer from "@/app/components/RequestFormContainer";
 
-// Хук для динамического изменения размера иконок
+
 const useIconSize = () => {
     const [iconSize, setIconSize] = useState(30);
 
@@ -14,7 +14,7 @@ const useIconSize = () => {
             setIconSize(window.innerWidth <= 1012 ? 20 : 30);
         };
 
-        updateSize(); // Устанавливаем сразу при загрузке
+        updateSize();
         window.addEventListener("resize", updateSize);
         return () => window.removeEventListener("resize", updateSize);
     }, []);
@@ -23,7 +23,7 @@ const useIconSize = () => {
 };
 
 const Hero = () => {
-    const iconSize = useIconSize(); // Подключаем динамический размер иконок
+    const iconSize = useIconSize();
 
     const advantages = [
         { icon: <FaSnowflake size={iconSize} className="text-[#C7E07A]" />, title: "Современные технологии", description: "Эффективное охлаждение и обогрев." },
@@ -39,10 +39,8 @@ const Hero = () => {
             <div className="container mx-auto mt-8 sm:mt-12 md:mt-16 lg:mt-24 max-w-[1350px] h-auto lg:h-[800px] xl:h-[650px] px-4 sm:px-6 md:px-8 lg:px-12">
                 <div className="flex flex-col lg:flex-row items-center lg:items-stretch gap-8 lg:gap-12 xl:h-[650px] justify-center">
 
-                    {/* Левый блок */}
                     <div
                         className="relative bg-[#333] md:w-full rounded-xl md:rounded-2xl lg:rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 w-full lg:w-[60%] lg:max-w-[750px] flex flex-col justify-between shadow-md">
-                        {/* Заголовок */}
                         <div>
                             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-4 sm:mt-6 md:mt-8 font-bold leading-tight tracking-tight text-white text-center md:text-left">
                                 Комфортный климат <br className="hidden sm:block"/> в каждом доме
@@ -53,7 +51,6 @@ const Hero = () => {
                             </p>
                         </div>
 
-                        {/* 🔥 Бесконечная анимация преимуществ */}
                         <div className="mt-6 sm:mt-8 md:mt-10 overflow-hidden w-full relative">
                             <motion.div
                                 className="flex gap-3 sm:gap-4 md:gap-5 lg:gap-6"
@@ -74,11 +71,9 @@ const Hero = () => {
                             </motion.div>
                         </div>
 
-                        {/* Кнопки */}
                         <div
                             className="mt-6 sm:mt-8 md:mt-10 flex flex-wrap justify-center sm:justify-center md:justify-start gap-4 sm:gap-5 md:gap-6 flex-col sm:flex-row"
                         >
-                            {/* Первая кнопка */}
                             <Link
                                 href="/catalog"
                                 className="bg-[#C7E07A] text-[#333333] font-semibold text-sm sm:text-base md:text-lg lg:text-base xl:text-lg
@@ -89,13 +84,11 @@ const Hero = () => {
                                 Каталог товаров
                             </Link>
 
-                            {/* Вторая кнопка */}
                           <RequestFormContainer></RequestFormContainer>
                         </div>
 
 
                     </div>
-                    {/* Правый блок */}
                     <div className="flex flex-col w-full lg:w-[40%] md:w-full lg:max-w-[600px] gap-4 sm:gap-6 md:gap-8">
                         <div
                             className="relative overflow-hidden rounded-xl md:rounded-2xl lg:rounded-3xl shadow-xl transition-transform

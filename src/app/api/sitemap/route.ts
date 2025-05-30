@@ -11,23 +11,23 @@ const client = createClient({
 export async function GET() {
     const baseUrl = "https://ac-kaliningrad.vercel.app";
 
-    // Запрос товаров
+
     const productsQuery = `*[_type == "product" && defined(slug.current)]{
         "slug": slug.current
     }`;
 
-    // Запрос услуг
+
     const servicesQuery = `*[_type == "service" && defined(slug.current)]{
         "slug": slug.current
     }`;
 
-    // Получаем товары и услуги
+
     const [products, services] = await Promise.all([
         client.fetch(productsQuery),
         client.fetch(servicesQuery),
     ]);
 
-    // Генерация sitemap
+
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>

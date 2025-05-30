@@ -1,11 +1,11 @@
-// scripts/seedServices.js
+
 import { createClient } from 'next-sanity';
 import 'dotenv/config';
 
 const client = createClient({
     projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'your_project_id',
     dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
-    token: process.env.SANITY_API_TOKEN || 'your_write_token', // Токен с правами на запись
+    token: process.env.SANITY_API_TOKEN || 'your_write_token',
     apiVersion: '2023-01-01',
     useCdn: false,
 });

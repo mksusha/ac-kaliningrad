@@ -44,7 +44,7 @@ const RequestForm: React.FC<RequestFormProps> = ({ onSubmit }) => {
         }
     };
 
-    if (status === 'submitted') return null; // Форма исчезает после отправки
+    if (status === 'submitted') return null;
 
     return (
         <form onSubmit={handleSubmit}

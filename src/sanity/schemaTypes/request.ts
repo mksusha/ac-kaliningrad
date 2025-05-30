@@ -1,4 +1,4 @@
-// schemas/request.js
+
 export default {
     name: "request",
     title: "Заявка",
@@ -19,7 +19,7 @@ export default {
             title: "Тип запроса",
             type: "string",
             options: {
-                list: ["consultation", "order_service", "order_product"], // Типы запросов
+                list: ["consultation", "order_service", "order_product"],
             },
         },
         {

@@ -5,7 +5,7 @@ import imageUrlBuilder from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { useState, useEffect } from "react";
 import { ArrowRightCircle } from "lucide-react";
-import { useFilters } from "@/app/components/FiltersContext"; // Импортируем контекст
+import { useFilters } from "@/app/components/FiltersContext";
 import { useRouter } from "next/navigation";
 
 const client = createClient({
@@ -36,14 +36,14 @@ interface CategoryData {
 
 export default function CatalogCategoriesBlock() {
     const [categoriesData, setCategoriesData] = useState<CategoryData[]>([]);
-    const { setCategory } = useFilters(); // Используем контекст для установки категории
-    const [isLoading, setIsLoading] = useState<boolean>(true); // Состояние загрузки
+    const { setCategory } = useFilters();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const router = useRouter();
 
     useEffect(() => {
         async function fetchData() {
             try {
-                setIsLoading(true); // Начинаем загрузку
+                setIsLoading(true);
                 const data = await Promise.all(
                     CATEGORIES.map(async (cat) => {
                         const firstProductQuery = `*[_type == "product" && category == $category][0]{ images }`;
@@ -71,7 +71,7 @@ export default function CatalogCategoriesBlock() {
             } catch (error) {
                 console.error("Error fetching categories:", error);
             } finally {
-                setIsLoading(false); // Завершаем загрузку
+                setIsLoading(false);
             }
         }
 
@@ -79,15 +79,15 @@ export default function CatalogCategoriesBlock() {
     }, []);
 
     const handleCategoryClick = (categoryValue: string) => {
-        setCategory(categoryValue); // Устанавливаем категорию в контекст
+        setCategory(categoryValue);
         const queryParams = new URLSearchParams(window.location.search);
-        queryParams.set("category", categoryValue); // Обновляем параметр category в URL
-        router.push(`/catalog?${queryParams.toString()}`); // Переход на страницу каталога с параметром category в URL
+        queryParams.set("category", categoryValue);
+        router.push(`/catalog?${queryParams.toString()}`);
     };
 
 
     if (isLoading) {
-        return <div>Загрузка категорий...</div>; // Можно добавить индикатор загрузки
+        return <div>Загрузка категорий...</div>;
     }
 
     return (

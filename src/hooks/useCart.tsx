@@ -1,13 +1,15 @@
 'use client'
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-// Интерфейсы
+interface ImageType {
+    url: string;
+}
 export interface CartItem {
     id: string;
     name: string;
     price: number;
     quantity: number;
-    image?: string;
+    image?: string | ImageType;
     slug: string;
     type: "product" | "service";
 }
@@ -21,14 +23,14 @@ interface CartContextValue {
     clearCart: () => void;
 }
 
-// Создаем контекст
+
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const [cart, setCart] = useState<CartItem[]>([]);
     const [cartCount, setCartCount] = useState(0);
 
-    // Загружаем корзину при монтировании (без лишних ререндеров)
+
     useEffect(() => {
         if (typeof window !== "undefined") {
             try {
@@ -41,35 +43,35 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }, []);
 
-    // Обновляем корзину и синхронизируем с localStorage
+
     const updateCart = (updatedCart: CartItem[]) => {
         setCart(updatedCart);
         setCartCount(updatedCart.reduce((acc, item) => acc + item.quantity, 0));
         localStorage.setItem("cart", JSON.stringify(updatedCart));
-        window.dispatchEvent(new Event("cartUpdated")); // Сигнализируем о обновлении корзины
+        window.dispatchEvent(new Event("cartUpdated"));
     };
 
-    // Добавляем товар в корзину
+
     const addToCart = (item: CartItem) => {
         const updatedCart = [...cart];
         const existingIndex = updatedCart.findIndex((i) => i.id === item.id);
 
         if (existingIndex !== -1) {
-            updatedCart[existingIndex].quantity += item.quantity; // Увеличиваем количество, если товар уже в корзине
+            updatedCart[existingIndex].quantity += item.quantity;
         } else {
-            updatedCart.push(item); // Добавляем новый товар
+            updatedCart.push(item);
         }
 
         updateCart(updatedCart);
     };
 
-    // Удаляем товар из корзины
+
     const removeFromCart = (id: string) => {
         const updatedCart = cart.filter((item) => item.id !== id);
         updateCart(updatedCart);
     };
 
-    // Обновляем количество товара в корзине
+
     const updateQuantity = (id: string, newQuantity: number) => {
         const updatedCart = cart.map((item) =>
             item.id === id ? { ...item, quantity: newQuantity > 0 ? newQuantity : 1 } : item
@@ -77,7 +79,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         updateCart(updatedCart);
     };
 
-    // Очищаем корзину
+
     const clearCart = () => {
         updateCart([]);
     };
@@ -89,7 +91,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
-// Хук для использования контекста корзины
+
 export function useCart() {
     const context = useContext(CartContext);
     if (!context) {

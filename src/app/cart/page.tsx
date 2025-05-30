@@ -36,12 +36,12 @@ const CartPage = () => {
         e.preventDefault();
         setStatus("loading");
 
-        const cleanPhoneNumber = formData.phone.replace(/\D/g, ''); // Убираем все нецифровые символы
+        const cleanPhoneNumber = formData.phone.replace(/\D/g, '');
 
         try {
             const orderData = {
                 ...formData,
-                phone: cleanPhoneNumber,  // очищенный номер телефона
+                phone: cleanPhoneNumber,
                 items: cart.map((item) => ({
                     name: item.name,
                     price: item.price,
@@ -89,17 +89,36 @@ const CartPage = () => {
                                             className="flex flex-col md:flex-row items-center p-4 md:p-6 bg-white rounded-xl shadow transition border-b-4 border-accent hover:shadow-md"
                                         >
                                             <Link href={`/catalog/${item.slug.toLowerCase()}`} className="flex flex-col md:flex-row items-center flex-1">
-                                                <div className="w-full md:w-28 h-auto md:h-28 mr-0 md:mr-6 mb-4 md:mb-0 flex-shrink-0">
+                                                <div
+                                                    className="w-full md:w-28 h-auto md:h-28 mr-0 md:mr-6 mb-4 md:mb-0 flex-shrink-0">
                                                     {item.image ? (
-                                                        <img src={item.image} alt={item.name} className="w-full h-full object-cover rounded-lg" />
+                                                        typeof item.image === "string" ? (
+                                                            <img
+                                                                src={item.image}
+                                                                alt={item.name}
+                                                                className="w-24 h-24 object-cover rounded"
+                                                            />
+                                                        ) : "url" in item.image ? (
+                                                            <img
+                                                                src={item.image.url}
+                                                                alt={item.name}
+                                                                className="w-24 h-24 object-cover rounded"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
+                                                                Нет фото
+                                                            </div>
+                                                        )
                                                     ) : (
                                                         <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
                                                             Нет фото
                                                         </div>
                                                     )}
+
+
                                                 </div>
                                                 <div className="text-center md:text-left">
-                                                    <h2 className="text-2xl font-semibold">{item.name}</h2>
+                                                <h2 className="text-2xl font-semibold">{item.name}</h2>
                                                     <p className="text-lg mt-2">Цена: {item.price} руб.</p>
                                                 </div>
                                             </Link>
@@ -130,7 +149,7 @@ const CartPage = () => {
                                     ))}
                                 </div>
 
-                                {/* Итог и кнопки */}
+                                {}
                                 <div className="mt-10 flex flex-col sm:flex-row items-center justify-between">
                                     <div className="text-2xl font-semibold">Итого: {totalCost} руб.</div>
                                     <div
@@ -165,17 +184,17 @@ const CartPage = () => {
             </div>
 
 
-            {/* Модальное окно */}
+            {}
             {isModalOpen && (
                 <div
                     className="fixed z-50 inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-                    onClick={() => setIsModalOpen(false)} // Закрытие по клику вне модалки
+                    onClick={() => setIsModalOpen(false)}
                 >
                     <div
                         className="bg-white mx-4 p-7 rounded-2xl shadow-lg w-96 relative"
-                        onClick={(e) => e.stopPropagation()} // Остановка всплытия клика внутри модалки
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Кнопка закрытия */}
+                        {}
                         <button
                             onClick={() => setIsModalOpen(false)}
                             className="absolute top-7 right-7 text-gray-500 text-2xl"

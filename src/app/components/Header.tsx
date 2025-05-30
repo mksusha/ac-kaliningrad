@@ -1,49 +1,29 @@
 'use client'
-import { FiShoppingCart } from "react-icons/fi"; // Иконка корзины
-import { useState, useEffect } from "react"; // Для состояния бургера
+import { FiShoppingCart } from "react-icons/fi";
+import { useState, useEffect } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 import Link from "next/link";
-import {useCart} from "@/hooks/useCart"; // Иконки для бургера
-// import { useCart } from "@/hooks/useCart";
+import {useCart} from "@/hooks/useCart";
+
 
 const Header = () => {
-    const { cartCount } = useCart(); // Получаем количество товаров из контекста
+    const { cartCount } = useCart();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    //
-    // useEffect(() => {
-    //     // Функция обновления локального количества товаров в корзине
-    //     const updateCartFromStorage = () => {
-    //         const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    //         const count = storedCart.reduce((acc: number, item: any) => acc + item.quantity, 0);
-    //         setLocalCartCount(count);
-    //     };
-    //
-    //     // Подписываемся на событие обновления корзины
-    //     window.addEventListener("cartUpdated", updateCartFromStorage);
-    //
-    //     // Отписываемся при размонтировании
-    //     return () => {
-    //         window.removeEventListener("cartUpdated", updateCartFromStorage);
-    //     };
-    // }, []);
+
         return (
             <header
                 className="md:bg-transparent bg-background/50 backdrop-blur-sm p-0 lg:py-4 shadow-sm lg:bg-background/70 fixed top-0 left-0 w-full z-50">
                 <div
                     className="container mx-auto flex items-center justify-between px-6 lg:py-1.5 max-w-[1350px] w-full">
-                    {/* Логотип */}
                     <a href="/" className="flex items-center text-xl font-bold text-foreground">
                         <img src="/logo.svg" alt="Кондиционер Калининград" className="w-36 h-14 lg:w-30 lg:h-10 mr-2"/>
                     </a>
 
-                    {/* Фон и Навигация */}
                     <div className="relative flex items-center">
-                        {/* Овал с фоном (скрыт на экранах < 375px) */}
                         <div
                             className="hidden md:block absolute w-auto md:w-[430px] lg:w-[550px] h-[40px] bg-[#C7E07A] opacity-60 rounded-full -z-10 left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
                         </div>
 
-                        {/* Навигация для больших экранов */}
                         <nav className="hidden md:flex  space-x-1 z-10">
                             {[
                                 {text: "Каталог", url: "/catalog"},
@@ -65,8 +45,7 @@ const Header = () => {
 
                     </div>
 
-                    {/* Кнопка и Иконка для больших экранов */}
-                    {/* Кнопка и Иконка для больших экранов */}
+
                     <div className="hidden md:flex items-center">
                         <Link
                             href="/cart"
@@ -84,8 +63,6 @@ const Header = () => {
                     </div>
 
 
-
-                    {/* Бургер кнопка для маленьких экранов */}
                     <button
                         className="md:hidden text-foreground text-3xl"
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -95,7 +72,7 @@ const Header = () => {
                     </button>
                 </div>
 
-                {/* Мобильное меню */}
+
                 <div
                     className={`fixed top-0 left-0 w-full max-h-[80vh] bg-white shadow-md px-6 py-4 transition-transform transform ${
                         isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
@@ -129,7 +106,6 @@ const Header = () => {
                             Контакты
                         </a>
 
-                        {/* Кнопка "Купить" с корзиной для мобильного меню */}
                         <div className="flex flex-col space-y-4 mt-4">
                             <Link
                                 href="/cart"
