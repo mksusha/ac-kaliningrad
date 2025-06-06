@@ -40,10 +40,7 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
     try {
-        const body = await req.json();
-        console.log("PUT body:", body);
-
-        const { id, title, slug, manufacturer } = body;
+        const { id, title, slug, manufacturer } = await req.json();
 
         if (!id || !title || !slug || typeof slug !== "string") {
             return NextResponse.json(
@@ -66,7 +63,8 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     try {
-        const { id } = await req.json();
+        const url = new URL(req.url);
+        const id = url.searchParams.get('id');
 
         if (!id) {
             return NextResponse.json({ message: "id обязателен" }, { status: 400 });

@@ -57,9 +57,10 @@ export default function ProductsAdminPage() {
         if (deletingId === null) return;
 
         try {
-            const res = await fetch(`/api/products/${deletingId}`, {
+            const res = await fetch(`/api/products?id=${deletingId}`, {
                 method: "DELETE",
             });
+
             if (!res.ok) throw new Error("Ошибка при удалении товара");
 
             setProducts((prev) => prev.filter((product) => product.id !== deletingId));
