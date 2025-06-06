@@ -62,7 +62,7 @@ export default function ServicesAdminPage() {
     if (error) return <p className="p-6 text-red-600">{error}</p>;
 
     return (
-        <main className="max-w-5xl mx-auto p-6 bg-white shadow-md rounded-2xl space-y-6">
+        <main className="max-w-5xl mx-auto p-6  space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <h1 className="text-3xl font-bold text-foreground">Управление услугами</h1>
                 <Link
@@ -79,7 +79,6 @@ export default function ServicesAdminPage() {
                     <tr>
                         <th className="px-4 py-3 border-b border-gray-200">Название</th>
                         <th className="px-4 py-3 border-b border-gray-200">Цена</th>
-                        <th className="px-4 py-3 border-b border-gray-200">Тип</th>
                         <th className="px-4 py-3 border-b border-gray-200">Действия</th>
                     </tr>
                     </thead>
@@ -90,21 +89,19 @@ export default function ServicesAdminPage() {
                             <td className="px-4 py-3 text-gray-700">
                                 {service.price_label || 'От'} {service.price}
                             </td>
-                            <td className="px-4 py-3 text-gray-700">
-                                {service.service_type || '-'}
-                            </td>
+
                             <td className="px-4 py-3 space-x-2">
                                 <Link
                                     href={`/ap/services/${service.id}/edit`}
                                     className="inline-block text-accent hover:text-accentHover2 font-medium"
                                 >
-                                    ✏️ Редактировать
+                                    Редактировать
                                 </Link>
                                 <button
                                     onClick={() => handleDelete(service.id)}
                                     className="inline-block text-red-600 hover:text-red-800 font-medium"
                                 >
-                                    🗑️ Удалить
+                                    Удалить
                                 </button>
                             </td>
                         </tr>

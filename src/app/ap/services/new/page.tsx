@@ -49,7 +49,7 @@ export default function CreateServicePage() {
                     value={form.title}
                     onChange={handleChange}
                     placeholder="Название"
-                    className="w-full border px-3 py-2"
+                    className="w-full rounded-xl border px-3 py-2"
                     required
                 />
                 <textarea
@@ -57,7 +57,7 @@ export default function CreateServicePage() {
                     value={form.description}
                     onChange={handleChange}
                     placeholder="Описание"
-                    className="w-full border px-3 py-2"
+                    className="w-full rounded-xl border px-3 py-2"
                 />
                 <input
                     name="price"
@@ -65,7 +65,7 @@ export default function CreateServicePage() {
                     value={form.price}
                     onChange={handleChange}
                     placeholder="Цена"
-                    className="w-full border px-3 py-2"
+                    className="w-full rounded-xl border px-3 py-2"
                     required
                 />
                 <input
@@ -73,34 +73,34 @@ export default function CreateServicePage() {
                     value={form.price_label}
                     onChange={handleChange}
                     placeholder="Метка цены (например, от 1000 ₽)"
-                    className="w-full border px-3 py-2"
+                    className="w-full rounded-xl border px-3 py-2"
                 />
                 <input
                     name="slug"
                     value={form.slug}
                     onChange={handleChange}
                     placeholder="Слаг (для URL)"
-                    className="w-full border px-3 py-2"
+                    className="w-full rounded-xl border px-3 py-2"
                 />
                 <input
                     name="service_type"
                     value={form.service_type}
                     onChange={handleChange}
                     placeholder="Тип услуги"
-                    className="w-full border px-3 py-2"
+                    className="w-full rounded-xl border px-3 py-2"
                 />
                 <input
                     name="image_url"
                     value={form.image_url}
                     onChange={handleChange}
                     placeholder="URL изображения"
-                    className="w-full border px-3 py-2"
+                    className="w-full rounded-xl border px-3 py-2"
                 />
                 <button
                     type="submit"
-                    className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                    className="bg-accent text-foreground px-4 py-2 rounded-xl hover:bg-accentHover"
                 >
-                    ✅ Сохранить
+                    Сохранить
                 </button>
             </form>
         </main>

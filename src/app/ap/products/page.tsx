@@ -86,7 +86,7 @@ export default function ProductsAdminPage() {
 
     return (
         <main className="p-8 font-sans max-w-6xl m-auto">
-            <h1 className="text-3xl font-extrabold mb-8 text-gray-900">🛒 Все товары</h1>
+            <h1 className="text-3xl font-extrabold mb-8 text-gray-900">Все товары</h1>
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
                 <Link

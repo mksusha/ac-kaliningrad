@@ -67,7 +67,7 @@ export default function NewLocationPage() {
                 type="text"
                 value={address}
                 onChange={e => setAddress(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-full p-3 border border-gray-300 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-accent"
                 placeholder="Введите адрес"
                 disabled={loading}
             />
@@ -77,7 +77,7 @@ export default function NewLocationPage() {
                 type="number"
                 value={latitude}
                 onChange={e => setLatitude(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-full p-3 border border-gray-300 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-accent"
                 placeholder="Например, 59.9343"
                 disabled={loading}
             />
@@ -87,7 +87,7 @@ export default function NewLocationPage() {
                 type="number"
                 value={longitude}
                 onChange={e => setLongitude(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-full p-3 border border-gray-300 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-accent"
                 placeholder="Например, 30.3351"
                 disabled={loading}
             />
@@ -97,7 +97,7 @@ export default function NewLocationPage() {
                 type="number"
                 value={altitude}
                 onChange={e => setAltitude(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-md mb-5 focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-full p-3 border border-gray-300 rounded-xl mb-5 focus:outline-none focus:ring-2 focus:ring-accent"
                 placeholder="Например, 10"
                 disabled={loading}
             />
@@ -108,7 +108,7 @@ export default function NewLocationPage() {
             <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="w-full py-3 rounded-md text-white text-lg font-semibold transition-colors"
+                className="w-full py-3 rounded-xl text-white text-lg font-semibold transition-colors"
                 style={{
                     backgroundColor: loading ? '#ccc' : accent,
                     cursor: loading ? 'not-allowed' : 'pointer',
