@@ -18,6 +18,7 @@ export default function WorksList({ initialWorks }: { initialWorks: Work[] }) {
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedId, setSelectedId] = useState<string | null>(null);
+    console.log('Initial works:', initialWorks);
 
     function openModal(id: string) {
         setSelectedId(id);
@@ -48,17 +49,18 @@ export default function WorksList({ initialWorks }: { initialWorks: Work[] }) {
     return (
         <>
             <ul className="space-y-6">
-                {works.map(work => (
+                {works.map((work, index) => (
                     <li
-                        key={work.sanity_id}
+                        key={work.sanity_id ?? `work-${index}`}
                         className="bg-white border border-gray-200 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow relative"
                     >
                         <Link
-                            href={`/ap/works/${work.sanity_id}`}
+                            href={work.sanity_id ? `/ap/works/${work.sanity_id}` : '#'}
                             className="text-xl font-semibold text-foreground hover:text-accentHover2 transition-colors"
                         >
                             {work.title}
                         </Link>
+
 
                         <div className="mt-3 prose prose-sm max-w-none">
                             <PortableText value={work.description}/>

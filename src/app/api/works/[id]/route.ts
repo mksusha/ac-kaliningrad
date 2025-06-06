@@ -11,17 +11,20 @@ export async function GET(request: Request) {
     const id = getIdFromRequest(request);
 
     const client = await getClient();
-    const result = await client.query(
-        'SELECT * FROM works WHERE sanity_id = $1',
-        [id]
-    );
-    await client.end();
+    try {
+        const result = await client.query(
+            'SELECT * FROM works WHERE sanity_id = $1',
+            [id]
+        );
 
-    if (result.rows.length === 0) {
-        return NextResponse.json({ message: 'Работа не найдена' }, { status: 404 });
+        if (result.rows.length === 0) {
+            return NextResponse.json({ message: 'Работа не найдена' }, { status: 404 });
+        }
+
+        return NextResponse.json(result.rows[0]);
+    } finally {
+        await client.end();
     }
-
-    return NextResponse.json(result.rows[0]);
 }
 
 export async function PATCH(request: Request) {
@@ -30,7 +33,6 @@ export async function PATCH(request: Request) {
     let bodyText: string;
     try {
         bodyText = await request.text();
-        console.log('PATCH BODY RAW:', bodyText);
     } catch {
         return NextResponse.json({ message: 'Ошибка чтения тела запроса' }, { status: 400 });
     }
@@ -65,4 +67,24 @@ export async function PATCH(request: Request) {
     }
 
     return NextResponse.json({ success: true });
+}
+
+export async function DELETE(request: Request) {
+    const id = getIdFromRequest(request);
+
+    const client = await getClient();
+    try {
+        const res = await client.query('DELETE FROM works WHERE sanity_id = $1', [id]);
+
+        if (res.rowCount === 0) {
+            return NextResponse.json({ message: 'Работа не найдена' }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Ошибка при удалении работы:', error);
+        return NextResponse.json({ message: 'Ошибка сервера' }, { status: 500 });
+    } finally {
+        await client.end();
+    }
 }

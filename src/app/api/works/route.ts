@@ -1,33 +1,47 @@
 import { NextResponse } from 'next/server';
 import { getClient } from '@/lib/db';
+import { randomUUID } from 'crypto'; // ✅ импорт генерации UUID
 
-function parsePgArray(pgArrayStr: string): string[] {
-    if (!pgArrayStr) return [];
-    const trimmed = pgArrayStr.replace(/^{|}$/g, '');
-    return trimmed
-        .split(',')
-        .map((s) => s.trim().replace(/^"(.*)"$/, '$1'))
-        .filter(Boolean);
+// Простая функция для генерации slug из title
+function slugify(text: string) {
+    return text
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')       // заменяем пробелы на дефисы
+        .replace(/[^\w\-]+/g, '')   // удаляем все не буквенно-цифровые символы
+        .replace(/\-\-+/g, '-');    // заменяем несколько дефисов на один
+}
+
+// Функция для генерации уникального slug
+async function generateUniqueSlug(client: any, baseSlug: string) {
+    let slug = baseSlug;
+    let count = 1;
+
+    while (true) {
+        const res = await client.query('SELECT 1 FROM works WHERE slug = $1', [slug]);
+        if (res.rowCount === 0) break;
+        slug = `${baseSlug}-${count}`;
+        count++;
+    }
+
+    return slug;
 }
 
 export async function GET() {
     const client = await getClient();
     try {
         const result = await client.query('SELECT * FROM works');
+        console.log('Fetched works:', result.rows.length);
 
         const works = result.rows.map(work => {
             if (typeof work.description === 'string') {
                 try {
                     work.description = JSON.parse(work.description);
                 } catch {
-                    // оставить как есть
+                    // Оставляем как есть
                 }
             }
-
-            if (typeof work.images === 'string') {
-                work.images = parsePgArray(work.images);
-            }
-
             return work;
         });
 
@@ -53,18 +67,23 @@ export async function POST(request: Request) {
 
         client = await getClient();
 
-        console.log({ title, description, address, images });
+        const baseSlug = slugify(title);
+        const slug = await generateUniqueSlug(client, baseSlug);
 
-        const query = `
-      INSERT INTO works (title, description, address, images)
-      VALUES ($1, $2::jsonb, $3, $4)
-      RETURNING *
-    `;
-
-        const descriptionStr = typeof description === 'string' ? description : JSON.stringify(description);
+        const descriptionStr = typeof description === 'string' ? JSON.stringify(description) : JSON.stringify(description);
         const imagesArr = Array.isArray(images) ? images : [];
 
-        const result = await client.query(query, [title, descriptionStr, address || null, imagesArr]);
+        const sanityId = randomUUID(); // ✅ генерируем UUID на стороне JS
+
+        console.log('Inserting work:', { sanityId, title, slug, descriptionStr, address, imagesArr });
+
+        const query = `
+            INSERT INTO works (sanity_id, title, slug, description, address, images)
+            VALUES ($1, $2, $3, $4::jsonb, $5, $6::jsonb)
+            RETURNING *
+        `;
+
+        const result = await client.query(query, [sanityId, title, slug, descriptionStr, address || null, imagesArr]);
 
         const newWork = result.rows[0];
 
@@ -74,15 +93,13 @@ export async function POST(request: Request) {
             } catch {}
         }
 
-        if (typeof newWork.images === 'string') {
-            newWork.images = parsePgArray(newWork.images);
-        }
+        console.log('Inserted work:', newWork);
 
         return NextResponse.json(newWork, { status: 201 });
     } catch (e) {
         console.error('Error creating work:', e);
         return NextResponse.json(
-            { error: 'Internal server error', details: e instanceof Error ? e.message : e },
+            { error: 'Internal server error', details: e instanceof Error ? e.message : String(e) },
             { status: 500 }
         );
     } finally {

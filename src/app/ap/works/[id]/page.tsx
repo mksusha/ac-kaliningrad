@@ -26,8 +26,12 @@ export default function EditWork() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    const blocksToText = (blocks: any[]): string =>
-        blocks.map(block => block.children?.map((child: any) => child.text).join('') || '').join('\n\n');
+    const blocksToText = (blocks: any): string => {
+        if (!Array.isArray(blocks)) return ''; // безопасный фоллбек
+        return blocks
+            .map(block => block.children?.map((child: any) => child.text).join('') || '')
+            .join('\n\n');
+    };
 
     const textToBlocks = (text: string): any[] =>
         text.split(/\n{2,}/).map(paragraph => ({
@@ -58,7 +62,21 @@ export default function EditWork() {
                 setTitle(data.title);
                 setAddress(data.address);
                 setDescription(blocksToText(data.description));
-                setImagesInput(data.images?.join(', ') || ''); // <-- заполняем строки с картинками
+
+                // Безопасная обработка images
+                let parsedImages: string[] = [];
+
+                try {
+                    if (typeof data.images === 'string') {
+                        parsedImages = JSON.parse(data.images);
+                    } else if (Array.isArray(data.images)) {
+                        parsedImages = data.images;
+                    }
+                } catch {
+                    parsedImages = [];
+                }
+
+                setImagesInput(parsedImages.join(', '));
             })
             .catch(err => {
                 alert(err.message);
