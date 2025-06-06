@@ -11,7 +11,7 @@ type Work = {
 };
 
 export default async function WorksPage() {
-    const res = await fetch('/api/works');
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/works`);
 
     const works: Work[] = await res.json();
 
