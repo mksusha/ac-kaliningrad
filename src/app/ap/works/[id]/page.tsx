@@ -21,6 +21,7 @@ export default function EditWork() {
     const [title, setTitle] = useState('');
     const [address, setAddress] = useState('');
     const [description, setDescription] = useState('');
+    const [imagesInput, setImagesInput] = useState(''); // <-- новое состояние для картинок
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
@@ -57,6 +58,7 @@ export default function EditWork() {
                 setTitle(data.title);
                 setAddress(data.address);
                 setDescription(blocksToText(data.description));
+                setImagesInput(data.images?.join(', ') || ''); // <-- заполняем строки с картинками
             })
             .catch(err => {
                 alert(err.message);
@@ -75,10 +77,16 @@ export default function EditWork() {
 
         setLoading(true);
 
+        const imagesArray = imagesInput
+            .split(',')
+            .map(img => img.trim())
+            .filter(Boolean);
+
         const payload = {
             title: title.trim(),
             address: address.trim(),
             description: textToBlocks(description.trim()),
+            images: imagesArray, // <-- отправляем массив
         };
 
         try {
@@ -135,6 +143,16 @@ export default function EditWork() {
                 rows={10}
                 className="w-full p-3 border border-gray-300 rounded-xl mb-6 focus:outline-none focus:ring-2 focus:ring-accent"
                 placeholder="Введите описание"
+                disabled={loading}
+            />
+
+            <label className="block mb-2 font-medium text-gray-700">Ссылки на изображения (через запятую)</label>
+            <textarea
+                value={imagesInput}
+                onChange={e => setImagesInput(e.target.value)}
+                rows={3}
+                className="w-full p-3 border border-gray-300 rounded-xl mb-6 focus:outline-none focus:ring-2 focus:ring-accent"
+                placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
                 disabled={loading}
             />
 

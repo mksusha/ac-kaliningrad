@@ -42,7 +42,7 @@ export async function PATCH(request: Request) {
         return NextResponse.json({ message: 'Неверный JSON' }, { status: 400 });
     }
 
-    const { title, address, description } = body;
+    const { title, address, description, images } = body;
 
     if (!title) {
         return NextResponse.json({ message: 'Название обязательно' }, { status: 400 });
@@ -51,10 +51,11 @@ export async function PATCH(request: Request) {
     const client = await getClient();
     try {
         const descriptionJson = JSON.stringify(description);
+        const imagesArr = Array.isArray(images) ? images : [];
 
         await client.query(
-            `UPDATE works SET title = $1, address = $2, description = $3 WHERE sanity_id = $4`,
-            [title, address, descriptionJson, id]
+            `UPDATE works SET title = $1, address = $2, description = $3, images = $4 WHERE sanity_id = $5`,
+            [title, address, descriptionJson, imagesArr, id]
         );
     } catch (error) {
         console.error('Ошибка базы данных:', error);
