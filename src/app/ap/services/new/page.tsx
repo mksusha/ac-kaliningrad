@@ -21,6 +21,38 @@ export default function CreateServicePage() {
         setForm(prev => ({ ...prev, [name]: value }));
     };
 
+    // Обработчик загрузки файлов
+    const handleFilesUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
+
+        const formData = new FormData();
+        Array.from(files).forEach(file => formData.append('file', file));
+
+        try {
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await res.json();
+
+            if (data?.urls) {
+                setForm(prev => {
+                    const currentUrls = prev.image_url
+                        ? prev.image_url.split(',').map(x => x.trim()).filter(Boolean)
+                        : [];
+                    const newUrls = [...currentUrls, ...data.urls];
+                    return { ...prev, image_url: newUrls.join(', ') };
+                });
+            }
+        } catch {
+            alert('Ошибка загрузки файлов');
+        }
+
+        e.target.value = ''; // чтобы можно было загрузить те же файлы повторно
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -89,13 +121,37 @@ export default function CreateServicePage() {
                     placeholder="Тип услуги"
                     className="w-full rounded-xl border px-3 py-2"
                 />
-                <input
-                    name="image_url"
-                    value={form.image_url}
-                    onChange={handleChange}
-                    placeholder="URL изображения"
-                    className="w-full rounded-xl border px-3 py-2"
-                />
+
+                {/* Блок загрузки изображений */}
+                <div className="mb-4">
+                    <div className="flex items-center space-x-4 mb-2">
+                        <span className="text-gray-700 font-medium select-none">Изображения</span>
+                        <label
+                            htmlFor="file-upload"
+                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-accent text-foreground rounded-xl hover:bg-accentHover transition-colors font-semibold select-none"
+                        >
+                            Выбрать файлы
+                            <input
+                                id="file-upload"
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleFilesUpload}
+                                className="hidden"
+                            />
+                        </label>
+                    </div>
+
+                    <input
+                        type="text"
+                        placeholder="Вставьте URL изображений через запятую"
+                        name="image_url"
+                        value={form.image_url}
+                        onChange={handleChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent"
+                    />
+                </div>
+
                 <button
                     type="submit"
                     className="bg-accent text-foreground px-4 py-2 rounded-xl hover:bg-accentHover"

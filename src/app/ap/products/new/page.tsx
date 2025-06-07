@@ -264,16 +264,68 @@ export default function NewProductPage() {
                     />
                 </div>
 
-                <div>
-                    <label htmlFor="images" className="block mb-1 font-semibold">Изображения (URL через запятую)</label>
-                    <input
-                        id="images"
-                        type="text"
-                        value={images}
-                        onChange={e => setImages(e.target.value)}
-                        className="w-full border border-gray-300 rounded-2xl px-3 py-2"
-                    />
+                {/* Загрузка изображений + просмотр URL'ов */}
+                <div className="mb-4">
+                    <div className="flex items-center space-x-4 mb-2">
+                        <span className="text-gray-700 font-medium select-none">Загрузить изображения</span>
+
+                        <label
+                            htmlFor="file-upload"
+                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-accent text-foreground rounded-xl hover:bg-accentHover transition-colors font-semibold select-none"
+                        >
+                            Выбрать файлы
+                            <input
+                                id="file-upload"
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={async (e) => {
+                                    const files = e.target.files;
+                                    if (!files || files.length === 0) return;
+
+                                    const formData = new FormData();
+                                    Array.from(files).forEach(file => formData.append('file', file));
+
+                                    try {
+                                        const res = await fetch('/api/upload', {
+                                            method: 'POST',
+                                            body: formData,
+                                        });
+
+                                        const data = await res.json();
+                                        if (data?.urls) {
+                                            setImages(prev => {
+                                                const current = prev
+                                                    ? prev.split(',').map(x => x.trim()).filter(Boolean)
+                                                    : [];
+                                                return [...current, ...data.urls].join(', ');
+                                            });
+                                        }
+                                    } catch (err) {
+                                        alert('Ошибка загрузки файлов');
+                                    }
+
+                                    e.target.value = '';
+                                }}
+                                className="hidden"
+                            />
+                        </label>
+                    </div>
+
+                    <div>
+                        <label htmlFor="images" className="block mb-1 font-semibold">
+                            Изображения (URL через запятую)
+                        </label>
+                        <input
+                            id="images"
+                            type="text"
+                            value={images}
+                            onChange={e => setImages(e.target.value)}
+                            className="w-full border border-gray-300 rounded-2xl px-3 py-2"
+                        />
+                    </div>
                 </div>
+
 
                 <div>
                     <label htmlFor="models" className="block mb-1 font-semibold">Модели (через запятую)</label>

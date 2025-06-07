@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function NewWorkPage() {
@@ -86,6 +86,49 @@ export default function NewWorkPage() {
                         placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
                         rows={3}
                     />
+                </div>
+                <div className="flex items-center space-x-4 mb-4">
+                    <span className="text-gray-700 font-medium select-none">Загрузить изображения</span>
+
+                    <label
+                        htmlFor="file-upload"
+                        className="cursor-pointer inline-flex items-center px-4 py-2 bg-accent text-foreground rounded-xl hover:bg-accentHover transition-colors font-semibold select-none"
+                    >
+                        Выбрать файлы
+                        <input
+                            id="file-upload"
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={async (e) => {
+                                const files = e.target.files;
+                                if (!files || files.length === 0) return;
+
+                                const formData = new FormData();
+                                Array.from(files).forEach(file => formData.append('file', file));
+
+                                try {
+                                    const res = await fetch('/api/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                    });
+
+                                    const data = await res.json();
+                                    if (data?.urls) {
+                                        setImagesInput(prev => {
+                                            const current = prev ? prev.split(',').map(x => x.trim()) : [];
+                                            return [...current, ...data.urls].join(', ');
+                                        });
+                                    }
+                                } catch (err) {
+                                    alert('Ошибка загрузки файлов');
+                                }
+
+                                e.target.value = '';
+                            }}
+                            className="hidden"
+                        />
+                    </label>
                 </div>
                 <button
                     type="submit"

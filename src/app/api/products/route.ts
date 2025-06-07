@@ -17,7 +17,27 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
     try {
-        const { title, slug, manufacturer } = await req.json();
+        const body = await req.json();
+
+        const {
+            title,
+            slug,
+            manufacturer,
+            brand,
+            description,
+            images,
+            models,
+            prices,
+            area_options,
+            cooling_capacity,
+            management,
+            refrigerant,
+            dealer,
+            specs,
+            buy_links,
+            category,
+            range,
+        } = body;
 
         if (!title || !slug || typeof slug !== "string") {
             return NextResponse.json(
@@ -26,12 +46,38 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        await pool.query(
-            "INSERT INTO product (title, slug, manufacturer) VALUES ($1, $2, $3)",
-            [title, slug, manufacturer || null]
+        const result = await pool.query(
+            `INSERT INTO product (
+                title, slug, manufacturer, brand, description, images, models, prices,
+                area_options, cooling_capacity, management, refrigerant, dealer, specs,
+                buy_links, category, range
+            ) VALUES (
+                $1, $2, $3, $4, $5::jsonb, $6::jsonb, $7::jsonb, $8::jsonb,
+                $9::jsonb, $10::jsonb, $11, $12, $13, $14::jsonb,
+                $15::jsonb, $16, $17
+            ) RETURNING *`,
+            [
+                title,
+                slug,
+                manufacturer || null,
+                brand || null,
+                JSON.stringify(description || {}),
+                JSON.stringify(images || []),
+                JSON.stringify(models || []),
+                JSON.stringify(prices || []),
+                JSON.stringify(area_options || []),
+                JSON.stringify(cooling_capacity || {}),
+                management || null,
+                refrigerant || null,
+                dealer || null,
+                JSON.stringify(specs || {}),
+                JSON.stringify(buy_links || []),
+                category || null,
+                range || null,
+            ]
         );
 
-        return NextResponse.json({ message: "Товар создан" }, { status: 201 });
+        return NextResponse.json(result.rows[0], { status: 201 });
     } catch (error) {
         console.error("Ошибка создания товара:", error);
         return NextResponse.json({ message: "Ошибка сервера" }, { status: 500 });
@@ -40,21 +86,44 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
     try {
-        const { id, title, slug, manufacturer } = await req.json();
+        const body = await req.json();
 
-        if (!id || !title || !slug || typeof slug !== "string") {
-            return NextResponse.json(
-                { message: "id, title и slug (строка) обязательны" },
-                { status: 400 }
-            );
+        const { id } = body;
+
+        if (!id) {
+            return NextResponse.json({ message: "id обязателен" }, { status: 400 });
         }
 
-        await pool.query(
-            "UPDATE product SET title = $1, slug = $2, manufacturer = $3 WHERE id = $4",
-            [title, slug, manufacturer || null, id]
-        );
+        const allowedFields = [
+            "title", "slug", "brand", "description", "images", "models", "prices",
+            "area_options", "cooling_capacity", "management", "refrigerant", "dealer",
+            "manufacturer", "specs", "buy_links", "category", "range"
+        ];
 
-        return NextResponse.json({ message: "Товар обновлен" });
+        const fields: string[] = [];
+        const values: any[] = [];
+        let index = 1;
+
+        for (const key of allowedFields) {
+            if (key in body) {
+                fields.push(`${key} = $${index++}`);
+                const value = typeof body[key] === "object"
+                    ? JSON.stringify(body[key])
+                    : body[key];
+                values.push(value);
+            }
+        }
+
+        if (fields.length === 0) {
+            return NextResponse.json({ message: "Нет данных для обновления" }, { status: 400 });
+        }
+
+        values.push(id); // для WHERE
+        const query = `UPDATE product SET ${fields.join(", ")} WHERE id = $${index}`;
+
+        await pool.query(query, values);
+
+        return NextResponse.json({ message: "Товар успешно обновлён" });
     } catch (error) {
         console.error("Ошибка обновления товара:", error);
         return NextResponse.json({ message: "Ошибка сервера" }, { status: 500 });
@@ -64,7 +133,7 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
     try {
         const url = new URL(req.url);
-        const id = url.searchParams.get('id');
+        const id = url.searchParams.get("id");
 
         if (!id) {
             return NextResponse.json({ message: "id обязателен" }, { status: 400 });
@@ -72,7 +141,7 @@ export async function DELETE(req: NextRequest) {
 
         await pool.query("DELETE FROM product WHERE id = $1", [id]);
 
-        return NextResponse.json({ message: "Товар удален" });
+        return NextResponse.json({ message: "Товар удалён" });
     } catch (error) {
         console.error("Ошибка удаления товара:", error);
         return NextResponse.json({ message: "Ошибка сервера" }, { status: 500 });

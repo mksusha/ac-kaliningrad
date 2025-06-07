@@ -358,17 +358,65 @@ export default function EditProductForm({ product }: { product: AirConditioner }
                 />
             </div>
 
-            {/* Массивы как строки */}
-            <div>
-                <label className="block font-semibold mb-1" htmlFor="images">Изображения (через запятую)</label>
+            {/* Загрузка изображений + просмотр URL'ов */}
+            <div className="mb-4">
+                <div className="flex items-center space-x-4 mb-2">
+                    <span className="text-gray-700 font-medium select-none">Загрузить изображения</span>
+
+                    <label
+                        htmlFor="file-upload"
+                        className="cursor-pointer inline-flex items-center px-4 py-2 bg-accent text-foreground rounded-xl hover:bg-accentHover transition-colors font-semibold select-none"
+                    >
+                        Выбрать файлы
+                        <input
+                            id="file-upload"
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={async (e) => {
+                                const files = e.target.files;
+                                if (!files || files.length === 0) return;
+
+                                const formData = new FormData();
+                                Array.from(files).forEach(file => formData.append('file', file));
+
+                                try {
+                                    const res = await fetch('/api/upload', {
+                                        method: 'POST',
+                                        body: formData,
+                                    });
+
+                                    const data = await res.json();
+                                    if (data?.urls) {
+                                        setImages(prev => {
+                                            const current = prev
+                                                ? prev.split(',').map(x => x.trim()).filter(Boolean)
+                                                : [];
+                                            return [...current, ...data.urls].join(', ');
+                                        });
+                                    }
+                                } catch (err) {
+                                    alert('Ошибка загрузки файлов');
+                                }
+
+                                e.target.value = '';
+                            }}
+                            className="hidden"
+                        />
+                    </label>
+                </div>
+
+                {/* Инпут для просмотра и ручного редактирования ссылок */}
                 <input
                     id="images"
                     type="text"
                     value={images}
                     onChange={(e) => setImages(e.target.value)}
+                    placeholder="https://example.com/img1.jpg, https://example.com/img2.jpg"
                     className="w-full border px-3 py-2 rounded-2xl"
                 />
             </div>
+
 
             <div>
                 <label className="block font-semibold mb-1" htmlFor="models">Модели (через запятую)</label>

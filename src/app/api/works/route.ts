@@ -1,17 +1,36 @@
 import { NextResponse } from 'next/server';
 import { getClient } from '@/lib/db';
-import { randomUUID } from 'crypto'; // ✅ импорт генерации UUID
+import { randomUUID } from 'crypto';
 
 // Простая функция для генерации slug из title
 function slugify(text: string) {
-    return text
-        .toString()
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, '-')       // заменяем пробелы на дефисы
-        .replace(/[^\w\-]+/g, '')   // удаляем все не буквенно-цифровые символы
-        .replace(/\-\-+/g, '-');    // заменяем несколько дефисов на один
+    const transliterationMap: Record<string, string> = {
+        а: 'a', б: 'b', в: 'v', г: 'g', д: 'd',
+        е: 'e', ё: 'yo', ж: 'zh', з: 'z', и: 'i',
+        й: 'y', к: 'k', л: 'l', м: 'm', н: 'n',
+        о: 'o', п: 'p', р: 'r', с: 's', т: 't',
+        у: 'u', ф: 'f', х: 'h', ц: 'ts', ч: 'ch',
+        ш: 'sh', щ: 'shch', ъ: '', ы: 'y', ь: '',
+        э: 'e', ю: 'yu', я: 'ya',
+    };
+
+    const lower = text.toLowerCase().trim();
+
+    // Транслитерация
+    const transliterated = Array.from(lower).map(char => {
+        return transliterationMap[char] ?? char;
+    }).join('');
+
+    // Формируем slug
+    const slug = transliterated
+        .replace(/\s+/g, '-')        // пробелы в дефисы
+        .replace(/[^a-z0-9\-]+/g, '') // разрешаем только латинские буквы, цифры, дефисы
+        .replace(/\-\-+/g, '-')      // убираем двойные дефисы
+
+    console.log('slugify output:', slug);
+    return slug;
 }
+
 
 // Функция для генерации уникального slug
 async function generateUniqueSlug(client: any, baseSlug: string) {
@@ -67,15 +86,28 @@ export async function POST(request: Request) {
 
         client = await getClient();
 
+        console.log('Получен запрос на создание work:', { title, description, address, images });
+
         const baseSlug = slugify(title);
+        console.log('Сгенерирован baseSlug:', baseSlug);
+
         const slug = await generateUniqueSlug(client, baseSlug);
+        console.log('Сгенерирован уникальный slug:', slug);
 
-        const descriptionStr = typeof description === 'string' ? JSON.stringify(description) : JSON.stringify(description);
         const imagesArr = Array.isArray(images) ? images : [];
+        const descriptionStr = JSON.stringify(description);
+        const imagesJson = JSON.stringify(imagesArr);
 
-        const sanityId = randomUUID(); // ✅ генерируем UUID на стороне JS
+        const sanityId = randomUUID();
 
-        console.log('Inserting work:', { sanityId, title, slug, descriptionStr, address, imagesArr });
+        console.log('Данные для вставки:', {
+            sanityId,
+            title,
+            slug,
+            descriptionStr,
+            address: address || null,
+            imagesJson
+        });
 
         const query = `
             INSERT INTO works (sanity_id, title, slug, description, address, images)
@@ -83,17 +115,16 @@ export async function POST(request: Request) {
             RETURNING *
         `;
 
-        const result = await client.query(query, [sanityId, title, slug, descriptionStr, address || null, imagesArr]);
+        const result = await client.query(query, [sanityId, title, slug, descriptionStr, address || null, imagesJson]);
 
         const newWork = result.rows[0];
+        console.log('Вставленная запись:', newWork);
 
         if (typeof newWork.description === 'string') {
             try {
                 newWork.description = JSON.parse(newWork.description);
             } catch {}
         }
-
-        console.log('Inserted work:', newWork);
 
         return NextResponse.json(newWork, { status: 201 });
     } catch (e) {

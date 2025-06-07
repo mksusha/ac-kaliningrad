@@ -176,6 +176,52 @@ export default function EditWork() {
 
             {error && <p className="text-red-600 mb-4 font-semibold">{error}</p>}
             {success && <p className="text-green-600 mb-4 font-semibold">{success}</p>}
+            <label className="block mb-2 font-medium text-gray-700">Загрузка изображений</label>
+
+            <div className="flex items-center space-x-4 mb-4">
+                <span className="text-gray-700 font-medium select-none">Загрузить изображения</span>
+
+                <label
+                    htmlFor="file-upload"
+                    className="cursor-pointer inline-flex items-center px-4 py-2 bg-accent text-foreground rounded-xl hover:bg-accentHover transition-colors font-semibold select-none"
+                >
+                    Выбрать файлы
+                    <input
+                        id="file-upload"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={async (e) => {
+                            const files = e.target.files;
+                            if (!files || files.length === 0) return;
+
+                            const formData = new FormData();
+                            Array.from(files).forEach(file => formData.append('file', file));
+
+                            try {
+                                const res = await fetch('/api/upload', {
+                                    method: 'POST',
+                                    body: formData,
+                                });
+
+                                const data = await res.json();
+                                if (data?.urls) {
+                                    setImagesInput(prev => {
+                                        const current = prev ? prev.split(',').map(x => x.trim()) : [];
+                                        return [...current, ...data.urls].join(', ');
+                                    });
+                                }
+                            } catch (err) {
+                                alert('Ошибка загрузки файлов');
+                            }
+
+                            e.target.value = '';
+                        }}
+                        className="hidden"
+                    />
+                </label>
+            </div>
+
 
             <button
                 onClick={handleSave}
